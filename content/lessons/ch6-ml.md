@@ -1,149 +1,567 @@
 @title: Phát triển mô hình học máy cơ bản
 @chapter: 6
-@summary: Học có/không giám sát, quy trình fit–predict, hồi quy tuyến tính, logistic, KNN, cây quyết định, K-Means và tiền xử lý.
+@summary: X và y, hồi quy tuyến tính đơn và bội, đánh giá bằng biểu đồ, R²/MSE, hồi quy đa thức và Pipeline, dự đoán ra quyết định, phân loại và phân cụm.
 
-## 1. Học máy là gì?
+Bản tiếng Anh của đề cương gọi chương này là **Model Development** – tên trùng với module 4 của khoá IBM *Data Analysis with Python*. Ví dụ xuyên suốt: **dự đoán giá xe** (`cars.csv`). Cuối chương có thêm phân loại (đỗ/trượt) và phân cụm.
 
-Máy **học quy luật từ dữ liệu** thay vì lập trình viên viết luật bằng tay.
+Mọi mô hình scikit-learn dùng **cùng một mẫu 3 bước**: tạo mô hình → `fit(X, y)` → `predict(X_moi)`.
 
-| Loại | Dữ liệu | Bài toán | Ví dụ | Mô hình |
-|---|---|---|---|---|
-| **Có giám sát** – hồi quy | X + nhãn **số** | dự đoán giá trị | điểm cuối kỳ, giá nhà | `LinearRegression` |
-| **Có giám sát** – phân loại | X + nhãn **lớp** | dự đoán nhóm | đỗ/trượt, spam | `LogisticRegression`, `KNeighborsClassifier`, `DecisionTreeClassifier` |
-| **Không giám sát** – phân cụm | chỉ X | tìm nhóm tự nhiên | phân khúc khách hàng | `KMeans` |
+> **Đối chiếu tài liệu FTU:** Lecture 9 – Phát triển mô hình P1 (học có/không giám sát, scikit-learn, hồi quy đơn/bội, đa thức, Pipeline, MSE, R²) và Lecture 10 (phân loại, **sigmoid**, logistic); đề cương ôn tập: "hồi quy đơn biến, đa biến: hệ số, intercept; mean_squared_error, R-square".
 
-Thuật ngữ: **X** = đặc trưng (features, ma trận 2 chiều), **y** = nhãn/mục tiêu (target, 1 chiều).
+@@@ c6-1 | Học máy là gì? Biến đầu vào X và mục tiêu y
+@ftu: Lecture 9 (bộ câu hỏi 25–30) – học có/không giám sát, scikit-learn, biến độc lập/phụ thuộc
+@goal: Phân biệt học có giám sát / không giám sát, hồi quy / phân loại; tách đúng X (DataFrame 2 chiều) và y (Series).
+@practice: ml06
 
-## 2. Quy trình chuẩn với scikit-learn
+| Loại | Có y? | Ví dụ | Mô hình |
+|---|---|---|---|
+| **Hồi quy** (có giám sát) | y là **số** | dự đoán giá xe, điểm thi | LinearRegression |
+| **Phân loại** (có giám sát) | y là **nhãn** | đỗ/trượt, gian lận/không | LogisticRegression, KNN, cây quyết định |
+| **Phân cụm** (không giám sát) | không có y | chia nhóm khách hàng | KMeans |
 
-Mọi mô hình trong sklearn dùng chung giao diện: **khởi tạo → `fit(X, y)` → `predict(X_new)` → đánh giá**.
+??
+Dự đoán **khách hàng có rời bỏ dịch vụ hay không** là bài toán:
+- [ ] Hồi quy
+- [x] Phân loại
+- [ ] Phân cụm
+- [ ] Không phải học máy
+> Đầu ra là nhãn (rời bỏ / ở lại).
 
 ```python
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_absolute_error, r2_score
-
-df = pd.read_csv("students.csv").dropna(subset=["final"])
-X = df[["study_hours", "attendance"]]     # 2 ngoặc -> DataFrame (2 chiều)
-y = df["final"]
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
-model = LinearRegression()
-model.fit(X_train, y_train)               # 1. học
-y_pred = model.predict(X_test)            # 2. dự đoán
-print("Hệ số:", model.coef_.round(3), "Hệ số chặn:", round(model.intercept_, 3))
-print("MAE:", round(mean_absolute_error(y_test, y_pred), 3), "R²:", round(r2_score(y_test, y_pred), 3))
+df = pd.read_csv("cars.csv", na_values="?").dropna()
+X = df[["horsepower"]]          # 2 ngoặc → DataFrame 2 chiều (n dòng × 1 cột)
+y = df["price"]                 # 1 ngoặc → Series 1 chiều
+print(X.shape, y.shape)
+print(df[["horsepower"]].ndim, df["horsepower"].ndim)
 ```
 
-> **X phải 2 chiều.** Với một đặc trưng dùng `df[["col"]]` hoặc `np.array(x).reshape(-1, 1)`. Viết `df["col"]` sẽ gây lỗi *Expected 2D array*.
+??
+Vì sao viết `X = df[["horsepower"]]` thay vì `df["horsepower"]`?
+- [ ] Để chạy nhanh hơn
+- [x] scikit-learn yêu cầu X là 2 chiều (dòng = mẫu, cột = biến)
+- [ ] Để bỏ ô thiếu
+- [ ] Không khác gì nhau
+> Truyền Series 1 chiều vào `fit` sẽ lỗi "Expected 2D array". y thì để 1 chiều.
 
-## 3. Hồi quy tuyến tính
+??
+Chia nhóm khách hàng theo hành vi mua sắm, **không có nhãn có sẵn**:
+- [ ] Hồi quy tuyến tính
+- [ ] Hồi quy logistic
+- [x] Phân cụm (KMeans)
+- [ ] Cây quyết định
+> Không có y → học không giám sát.
 
-Tìm đường thẳng **ŷ = a·x + b** sao cho tổng bình phương sai số nhỏ nhất. Đây chính là bài trong tuyển tập (dự đoán điểm từ giờ tự học):
+@@@ c6-2 | Hồi quy tuyến tính đơn
+@ftu: Lecture 9 – hồi quy tuyến tính đơn biến; đề 5/1/2024 – hệ số, hệ số chặn
+@goal: Huấn luyện `LinearRegression` với một biến, đọc ý nghĩa hệ số góc (`coef_`) và hệ số chặn (`intercept_`), dự đoán giá trị mới.
+@practice: ml01, ml05
+
+Mô hình: **ŷ = b₀ + b₁·x**. Máy tìm b₀, b₁ sao cho tổng bình phương sai số nhỏ nhất.
+
+```python
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+
+df = pd.read_csv("cars.csv", na_values="?").dropna()
+lm = LinearRegression()
+lm.fit(df[["horsepower"]], df["price"])
+print("b0 (intercept):", round(lm.intercept_, 1))
+print("b1 (coef):", round(lm.coef_[0], 1))
+moi = pd.DataFrame({"horsepower": [100, 150]})
+print(lm.predict(moi).round(0))
+```
+
+**Đọc hệ số:** b₁ ≈ 300 nghĩa là *mỗi mã lực tăng thêm, giá dự đoán tăng khoảng 300* (đơn vị tiền của dữ liệu).
+
+??
+Mô hình `price = -9000 + 310 · horsepower`. Xe 120 mã lực có giá dự đoán:
+- [x] 28200
+- [ ] 37200
+- [ ] 310
+- [ ] -8690
+> -9000 + 310 × 120 = 28200.
+
+??
+`lm.coef_` của mô hình một biến có dạng:
+- [ ] Một số thực
+- [x] Mảng 1 phần tử – lấy số bằng `lm.coef_[0]`
+- [ ] DataFrame
+- [ ] Tuple (b0, b1)
+> `coef_` luôn là mảng (mỗi biến một hệ số); `intercept_` là một số.
+
+??
+Hệ số góc âm (ví dụ giá theo `highway_mpg` là −2000) nghĩa là:
+- [ ] Mô hình sai
+- [x] Mpg càng cao, giá dự đoán càng thấp
+- [ ] Giá luôn âm
+- [ ] Không có quan hệ
+> Dấu của hệ số cho chiều quan hệ; xe tiết kiệm xăng thường là xe nhỏ, rẻ.
+
+@@@ c6-3 | Hồi quy tuyến tính bội
+@ftu: Lecture 9 – hồi quy đa biến; đề cương ôn tập – Model Development
+@goal: Đưa nhiều biến (kể cả biến giả) vào mô hình, đọc từng hệ số "khi các biến khác giữ nguyên".
+@practice: ml07
+
+**ŷ = b₀ + b₁x₁ + b₂x₂ + … + bₙxₙ**
+
+```python
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+
+df = pd.read_csv("cars.csv", na_values="?").dropna()
+cols = ["horsepower", "curb_weight", "engine_size", "highway_mpg"]
+lm = LinearRegression().fit(df[cols], df["price"])
+print(pd.Series(lm.coef_, index=cols).round(2))
+print("intercept:", round(lm.intercept_, 1))
+```
+
+Hệ số của `curb_weight` là mức thay đổi giá khi tăng 1 đơn vị khối lượng **trong khi các biến khác không đổi**.
+
+??
+Trong hồi quy bội, `len(lm.coef_)` bằng:
+- [ ] 1
+- [x] Số cột của X
+- [ ] Số dòng của X
+- [ ] Số cột + 1
+> Mỗi biến một hệ số. Hệ số chặn nằm riêng trong `intercept_`.
+
+Thêm biến phân loại qua biến giả (Chương 4):
+
+```python
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+
+df = pd.read_csv("cars.csv", na_values="?").dropna()
+X = pd.get_dummies(df[["horsepower", "drive_wheels"]], columns=["drive_wheels"], drop_first=True, dtype=int)
+print(X.columns.tolist())
+lm = LinearRegression().fit(X, df["price"])
+print(pd.Series(lm.coef_, index=X.columns).round(0))
+```
+
+??
+Vì sao dùng `drop_first=True` khi tạo biến giả cho hồi quy?
+- [ ] Để bớt dòng dữ liệu
+- [x] Để tránh một cột thừa – các biến giả cộng lại luôn bằng 1 gây đa cộng tuyến hoàn hảo
+- [ ] Vì sklearn không nhận 3 cột
+- [ ] Để tăng R²
+> Nhóm bị bỏ trở thành "nhóm gốc"; hệ số các nhóm còn lại là chênh lệch so với nhóm gốc.
+
+??
+Hệ số của `drive_wheels_rwd` là +9000 (nhóm gốc là `4wd`). Ý nghĩa:
+- [x] Xe dẫn động cầu sau đắt hơn xe 4wd khoảng 9000 khi các biến khác như nhau
+- [ ] Mọi xe rwd giá 9000
+- [ ] Xe rwd rẻ hơn 9000
+- [ ] Có 9000 xe rwd
+> Hệ số biến giả = chênh lệch trung bình so với nhóm gốc.
+
+@@@ c6-4 | Đánh giá mô hình bằng biểu đồ
+@ftu: Khoá IBM module 4 – residual plot, distribution plot (đề cương FTU dùng regplot)
+@goal: Vẽ và đọc biểu đồ hồi quy, biểu đồ phần dư (residual plot) và biểu đồ so sánh phân phối giá trị thật – dự đoán.
+
+```python
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+
+df = pd.read_csv("cars.csv", na_values="?").dropna()
+X, y = df[["highway_mpg"]], df["price"]
+lm = LinearRegression().fit(X, y)
+yhat = lm.predict(X)
+resid = y - yhat
+
+fig, axes = plt.subplots(1, 2, figsize=(10, 3.5))
+axes[0].scatter(X["highway_mpg"], y, s=15)
+xs = X["highway_mpg"].sort_values()
+axes[0].plot(xs, lm.predict(xs.to_frame()), color="red")
+axes[0].set_title("Đường hồi quy")
+axes[1].scatter(X["highway_mpg"], resid, s=15)
+axes[1].axhline(0, color="gray", linestyle="--")
+axes[1].set_title("Phần dư (y − ŷ)")
+fig.tight_layout()
+plt.show()
+```
+
+**Đọc residual plot:** nếu phần dư **rải ngẫu nhiên quanh 0** → mô hình tuyến tính phù hợp. Nếu phần dư có **hình cong** (chữ U) → quan hệ phi tuyến, nên thử hồi quy đa thức (bài 6.6).
+
+??
+Residual plot có dạng hình chữ U rõ rệt. Nên:
+- [ ] Kết luận mô hình tuyến tính hoàn hảo
+- [x] Thử mô hình phi tuyến, ví dụ hồi quy đa thức
+- [ ] Xoá hết dữ liệu ngoại lai
+- [ ] Đổi sang phân cụm
+> Phần dư có quy luật nghĩa là mô hình bỏ sót cấu trúc của dữ liệu.
+
+```python
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+
+df = pd.read_csv("cars.csv", na_values="?").dropna()
+cols = ["horsepower", "curb_weight", "engine_size", "highway_mpg"]
+yhat = LinearRegression().fit(df[cols], df["price"]).predict(df[cols])
+fig, ax = plt.subplots(figsize=(6, 3.5))
+ax.hist(df["price"], bins=12, alpha=0.5, label="Giá thật")
+ax.hist(yhat, bins=12, alpha=0.5, label="Giá dự đoán")
+ax.legend()
+ax.set_title("Phân phối giá thật và dự đoán (hồi quy bội)")
+plt.show()
+```
+
+Với **hồi quy bội** không vẽ được đường hồi quy 2D → so sánh **phân phối** giá thật và giá dự đoán: hai phân phối càng trùng nhau, mô hình càng khớp.
+
+??
+Phần dư (residual) của một quan sát là:
+- [ ] ŷ − x
+- [x] y − ŷ (giá trị thật trừ giá trị dự đoán)
+- [ ] y × ŷ
+- [ ] Hệ số góc
+> Phần dư dương: mô hình dự đoán **thấp hơn** thực tế.
+
+??
+Mô hình nhiều biến – cách trực quan nào phù hợp nhất để xem độ khớp?
+- [ ] Đường hồi quy trên scatter 2D
+- [x] So sánh phân phối y thật và ŷ (hoặc scatter y thật – ŷ)
+- [ ] Biểu đồ tròn
+- [ ] Boxplot của X
+> Không thể vẽ mặt phẳng nhiều chiều; so sánh y với ŷ là cách chung cho mọi mô hình.
+
+@@@ c6-5 | Đo độ khớp: R², MSE, RMSE, MAE
+@ftu: Lecture 9 (câu 42–45) – MSE, R²; outline – Adjusted R²
+@goal: Tính và diễn giải R², MSE, RMSE, MAE bằng `sklearn.metrics`; so sánh hai mô hình trên cùng dữ liệu.
+@practice: ml03
+
+| Chỉ số | Công thức | Ý nghĩa | Tốt khi |
+|---|---|---|---|
+| MAE | trung bình \|y − ŷ\| | sai số trung bình | nhỏ |
+| MSE | trung bình (y − ŷ)² | phạt nặng sai số lớn | nhỏ |
+| RMSE | √MSE | cùng đơn vị với y | nhỏ |
+| R² | 1 − SS_res / SS_tot | % biến động của y được giải thích | gần 1 |
 
 ```python
 import numpy as np
+import pandas as pd
 from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
-hours = [5, 10, 15, 20, 8, 12, 18, 6, 14, 16]
-scores = [5.0, 6.0, 7.5, 8.5, 5.5, 6.5, 8.0, 5.2, 7.0, 7.8]
-X = np.array(hours).reshape(-1, 1)
-model = LinearRegression().fit(X[:8], scores[:8])
-a, b = model.coef_[0], model.intercept_
-print(f"điểm ≈ {a:.3f} × giờ + {b:.3f}")
-print("Dự đoán 10 giờ:", model.predict([[10]])[0], "| tính tay:", a * 10 + b)
-
-# công thức bình phương tối thiểu tự tính
-x, y = np.array(hours[:8]), np.array(scores[:8])
-a2 = ((x - x.mean()) * (y - y.mean())).sum() / ((x - x.mean()) ** 2).sum()
-print("tự tính a =", round(a2, 3), "b =", round(y.mean() - a2 * x.mean(), 3))
+df = pd.read_csv("cars.csv", na_values="?").dropna()
+y = df["price"]
+for cols in (["highway_mpg"], ["horsepower", "curb_weight", "engine_size", "highway_mpg"]):
+    lm = LinearRegression().fit(df[cols], y)
+    yhat = lm.predict(df[cols])
+    mse = mean_squared_error(y, yhat)
+    print(f"{len(cols)} biến: R² = {r2_score(y, yhat):.3f}  RMSE = {np.sqrt(mse):,.0f}  MAE = {mean_absolute_error(y, yhat):,.0f}")
+print("lm.score cũng là R²:", round(lm.score(df[cols], y), 3))
 ```
 
-## 4. Hồi quy logistic – phân loại nhị phân
+??
+R² = 0.76 nghĩa là:
+- [ ] Mô hình dự đoán đúng 76% số xe
+- [x] Mô hình giải thích được khoảng 76% biến động của giá
+- [ ] Sai số trung bình 0.76
+- [ ] 76% dữ liệu được dùng để huấn luyện
+> R² không phải "độ chính xác %" – đó là tỉ lệ phương sai được giải thích.
 
-Dự đoán **xác suất** thuộc lớp 1 bằng hàm sigmoid, rồi so với ngưỡng 0.5.
+??
+Giá xe tính bằng đô-la. Chỉ số nào có **cùng đơn vị** với giá?
+- [ ] MSE
+- [x] RMSE và MAE
+- [ ] R²
+- [ ] Cả bốn
+> MSE có đơn vị bình phương (đô-la²); R² không có đơn vị.
+
+Vì R² không bao giờ giảm khi thêm biến, người ta dùng **R² hiệu chỉnh** (Adjusted R²) để "phạt" mô hình nhiều biến:
+
+**R²_adj = 1 − (1 − R²)·(n − 1)/(n − p − 1)**, với n là số quan sát, p là số biến.
+
+```python
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+
+df = pd.read_csv("cars.csv", na_values="?").dropna()
+n = len(df)
+for cols in (["horsepower"], ["horsepower", "curb_weight", "engine_size", "highway_mpg", "city_mpg"]):
+    r2 = LinearRegression().fit(df[cols], df["price"]).score(df[cols], df["price"])
+    p = len(cols)
+    print(len(cols), "biến: R² =", round(r2, 4), " R² hiệu chỉnh =", round(1 - (1 - r2) * (n - 1) / (n - p - 1), 4))
+```
+
+??
+Thêm biến vào hồi quy tuyến tính, R² **trên dữ liệu huấn luyện**:
+- [x] Không bao giờ giảm
+- [ ] Luôn giảm
+- [ ] Không đổi
+- [ ] Bằng 0
+> Vì vậy R² trên chính dữ liệu huấn luyện dễ "đánh lừa" – Chương 7 sẽ đánh giá trên dữ liệu **chưa thấy**.
+
+@@@ c6-6 | Hồi quy đa thức và Pipeline
+@ftu: Lecture 9 (câu 39–41) – polynomial features, Pipeline; đề cuối kỳ mẫu câu 18
+@goal: Mô hình hoá quan hệ cong bằng `PolynomialFeatures`, gom các bước chuẩn hoá → biến đổi → mô hình vào một `Pipeline`.
+@practice: ml07
+
+Hồi quy đa thức bậc 2: **ŷ = b₀ + b₁x + b₂x²** – vẫn là hồi quy *tuyến tính theo hệ số*, chỉ thêm cột x².
 
 ```python
 import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+df = pd.read_csv("cars.csv", na_values="?").dropna()
+x, y = df["highway_mpg"], df["price"]
+for bac in [1, 2, 3]:
+    p = np.poly1d(np.polyfit(x, y, bac))
+    print(bac, np.round(p.coefficients, 2))
+
+p2 = np.poly1d(np.polyfit(x, y, 2))
+xs = np.linspace(x.min(), x.max(), 100)
+fig, ax = plt.subplots(figsize=(6, 3.5))
+ax.scatter(x, y, s=15)
+ax.plot(xs, p2(xs), color="red")
+ax.set_title("Hồi quy đa thức bậc 2: giá theo highway_mpg")
+plt.show()
+```
+
+??
+`PolynomialFeatures(degree=2)` với **một** biến x tạo ra các cột:
+- [ ] Chỉ x²
+- [x] 1, x, x²
+- [ ] x, 2x
+- [ ] x, √x
+> Mặc định có cột hằng số 1 (`include_bias=True`).
+
+### Pipeline: gom nhiều bước thành một mô hình
+
+```python
+import pandas as pd
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler, PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+
+df = pd.read_csv("cars.csv", na_values="?").dropna()
+cols = ["horsepower", "curb_weight", "engine_size", "highway_mpg"]
+pipe = Pipeline([
+    ("scale", StandardScaler()),                       # 1. chuẩn hoá z-score
+    ("poly", PolynomialFeatures(degree=2, include_bias=False)),   # 2. thêm bình phương và tích chéo
+    ("model", LinearRegression()),                     # 3. hồi quy
+])
+pipe.fit(df[cols], df["price"])
+print("R² (pipeline bậc 2):", round(pipe.score(df[cols], df["price"]), 3))
+print(pipe.predict(df[cols].head(3)).round(0), df["price"].head(3).tolist())
+```
+
+??
+Lợi ích chính của `Pipeline` là:
+- [ ] Tăng R² gấp đôi
+- [x] Gọi `fit`/`predict` một lần cho mọi bước, đảm bảo dữ liệu mới được biến đổi **giống hệt** dữ liệu huấn luyện
+- [ ] Không cần dữ liệu
+- [ ] Thay thế được Pandas
+> Tránh quên chuẩn hoá dữ liệu mới, hoặc chuẩn hoá bằng thông số khác.
+
+??
+4 biến, `PolynomialFeatures(degree=2, include_bias=False)` tạo bao nhiêu cột?
+- [ ] 8
+- [x] 14
+- [ ] 16
+- [ ] 5
+> 4 cột gốc + 4 bình phương + 6 tích chéo (tổ hợp chập 2 của 4) = 14. Bậc càng cao, số cột tăng rất nhanh.
+
+@@@ c6-7 | Dự đoán và ra quyết định
+@ftu: Đáp án 20 câu thực hành FTU – dự đoán giá xe 4 năm tuổi từ mô hình
+@goal: Dùng mô hình để dự đoán giá trị mới, kiểm tra tính hợp lý của dự đoán, chọn mô hình theo R²/MSE và trả lời câu hỏi kinh doanh.
+
+Mô hình chỉ có giá trị khi giúp **ra quyết định**. Ví dụ: *"Với ngân sách 25 000, nên tìm xe công suất tối đa bao nhiêu?"*
+
+```python
+import numpy as np
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+
+df = pd.read_csv("cars.csv", na_values="?").dropna()
+lm = LinearRegression().fit(df[["horsepower"]], df["price"])
+hp = pd.DataFrame({"horsepower": np.arange(60, 200, 10)})
+hp["gia_du_doan"] = lm.predict(hp).round(0)
+print(hp.to_string(index=False))
+print("Công suất lớn nhất trong ngân sách:", hp.loc[hp["gia_du_doan"] <= 25000, "horsepower"].max())
+```
+
+**Kiểm tra tính hợp lý:**
+- Giá dự đoán âm, hay quá lớn? → mô hình có vấn đề hoặc đang **ngoại suy** quá xa dữ liệu.
+- Chỉ tin dự đoán trong **khoảng giá trị đã thấy** của x (ở đây khoảng 59–186 mã lực).
+
+??
+Dữ liệu huấn luyện có horsepower từ 59 đến 186. Dự đoán giá cho xe 600 mã lực:
+- [ ] Đáng tin như mọi dự đoán khác
+- [x] Là ngoại suy xa – rất kém tin cậy
+- [ ] Bị sklearn từ chối
+- [ ] Luôn bằng giá trung bình
+> Quan hệ tuyến tính quan sát được chưa chắc kéo dài ra ngoài vùng dữ liệu.
+
+??
+Hai mô hình trên cùng dữ liệu: A có R² = 0.76, MSE = 3.9e7; B có R² = 0.81, MSE = 3.1e7. Theo các chỉ số này:
+- [ ] Chọn A
+- [x] Chọn B – R² cao hơn và MSE thấp hơn
+- [ ] Không so sánh được
+- [ ] Chọn mô hình có ít biến hơn trong mọi trường hợp
+> Nhưng phải so sánh trên **dữ liệu kiểm tra** để chắc chắn B không bị quá khớp (Chương 7).
+
+??
+Mô hình dự đoán một xe có giá **âm**. Điều này cho thấy:
+- [ ] Xe đó miễn phí
+- [x] Mô hình không phù hợp ở vùng đó (ngoại suy hoặc quan hệ phi tuyến)
+- [ ] Dữ liệu bị đọc sai kiểu
+- [ ] R² bằng 1
+> Luôn kiểm tra dự đoán có hợp lý về mặt kinh tế.
+
+@@@ c6-8 | Phân loại: hồi quy logistic, KNN và cây quyết định
+@ftu: Lecture 10 (câu 46–48) – phân loại nhị phân, hàm sigmoid; outline – Logistic Regression, KNN Classifier
+@goal: Huấn luyện ba mô hình phân loại phổ biến, dự đoán nhãn và xác suất, hiểu khi nào cần chuẩn hoá dữ liệu.
+@practice: ml02, ml08, ml09
+
+Câu hỏi: *từ giờ tự học, chuyên cần và điểm giữa kỳ, dự đoán sinh viên đạt **final ≥ 7** hay không?*
+
+```python
+import pandas as pd
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
+
+df = pd.read_csv("students.csv").dropna()
+X = df[["study_hours", "attendance", "midterm"]]
+y = (df["final"] >= 7).astype(int)
+print("Tỉ lệ nhãn 1:", round(y.mean(), 2))
+
+for ten, m in [("Logistic", LogisticRegression(max_iter=1000)),
+               ("KNN k=5", KNeighborsClassifier(n_neighbors=5)),
+               ("Cây sâu 3", DecisionTreeClassifier(max_depth=3, random_state=0))]:
+    m.fit(X, y)
+    print(f"{ten:10s} độ chính xác trên dữ liệu huấn luyện: {m.score(X, y):.2f}")
+```
+
+??
+Với bộ phân loại, `model.score(X, y)` trả về:
+- [ ] R²
+- [x] Độ chính xác (accuracy) – tỉ lệ dự đoán đúng
+- [ ] MSE
+- [ ] Xác suất
+> Với mô hình hồi quy, `score` là R²; với bộ phân loại là accuracy.
+
+```python
+import pandas as pd
 from sklearn.linear_model import LogisticRegression
 
-attendance = np.array([12, 8, 14, 6, 13, 7, 15, 5, 11, 9]).reshape(-1, 1)
-passed = np.array([1, 0, 1, 0, 1, 0, 1, 0, 1, 0])
-clf = LogisticRegression().fit(attendance, passed)
-for buoi in [6, 9, 10, 11, 14]:
-    p = clf.predict_proba([[buoi]])[0][1]
-    print(f"{buoi:>2} buổi -> P(đỗ) = {p:.2f} -> dự đoán {clf.predict([[buoi]])[0]}")
+df = pd.read_csv("students.csv").dropna()
+X = df[["study_hours", "attendance", "midterm"]]
+y = (df["final"] >= 7).astype(int)
+m = LogisticRegression(max_iter=1000).fit(X, y)
+moi = pd.DataFrame({"study_hours": [6, 16], "attendance": [8, 14], "midterm": [5.0, 7.5]})
+print(m.predict(moi))                     # nhãn 0/1
+print(m.predict_proba(moi).round(2))      # [P(nhãn 0), P(nhãn 1)]
 ```
 
-## 5. K láng giềng gần nhất (KNN)
-
-Dự đoán theo **đa số k điểm gần nhất**. Nhạy với thang đo → nên chuẩn hoá.
+Hồi quy logistic đưa tổ hợp tuyến tính z = b₀ + b₁x₁ + … qua **hàm sigmoid** σ(z) = 1 / (1 + e^(−z)) để được xác suất trong khoảng (0, 1); xác suất ≥ 0.5 → dự đoán lớp 1.
 
 ```python
-import pandas as pd
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.preprocessing import StandardScaler
-from sklearn.pipeline import make_pipeline
-
-st = pd.read_csv("students.csv").dropna(subset=["final"])
-X = st[["attendance", "study_hours"]]
-y = (st["final"] >= 5).astype(int)
-knn = make_pipeline(StandardScaler(), KNeighborsClassifier(n_neighbors=5)).fit(X, y)
-new = pd.DataFrame({"attendance": [6, 14], "study_hours": [3, 15]})
-print(knn.predict(new), knn.predict_proba(new).round(2))
+import numpy as np
+z = np.array([-5, -1, 0, 1, 5])
+print((1 / (1 + np.exp(-z))).round(3))
 ```
 
-## 6. Cây quyết định
+??
+Hàm sigmoid cho đầu ra trong khoảng nào?
+- [ ] (−∞, +∞)
+- [x] (0, 1)
+- [ ] [−1, 1]
+- [ ] Chỉ 0 hoặc 1
+> Vì vậy đầu ra của logistic được hiểu là xác suất; σ(0) = 0.5.
 
-Chia dữ liệu bằng chuỗi câu hỏi "có/không" – **dễ giải thích** cho người không chuyên.
+??
+`predict_proba(X)[:, 1]` cho:
+- [ ] Nhãn dự đoán
+- [x] Xác suất thuộc lớp 1
+- [ ] Xác suất thuộc lớp 0
+- [ ] Độ chính xác
+> Mỗi dòng có một xác suất cho từng lớp, cộng lại bằng 1. Cột 1 ứng với lớp 1.
 
-```python
-import pandas as pd
-from sklearn.tree import DecisionTreeClassifier, export_text
+??
+Vì sao nên **chuẩn hoá** dữ liệu trước KNN?
+- [ ] KNN chỉ nhận số từ 0 đến 1
+- [x] KNN dựa vào khoảng cách – biến có thang đo lớn sẽ áp đảo các biến khác
+- [ ] Để cây quyết định chạy nhanh hơn
+- [ ] Không cần thiết
+> Ví dụ `curb_weight` (~3000) lấn át `engine_size` (~150). Cây quyết định thì không bị ảnh hưởng bởi thang đo.
 
-st = pd.read_csv("students.csv").dropna(subset=["midterm", "final"])
-X = st[["attendance", "study_hours", "midterm"]]
-y = (st["final"] >= 5).astype(int)
-tree = DecisionTreeClassifier(max_depth=2, random_state=0).fit(X, y)
-print(export_text(tree, feature_names=list(X.columns)))
-print(dict(zip(X.columns, tree.feature_importances_.round(3))))
-```
-
-## 7. Phân cụm K-Means
-
-Lặp 2 bước: **gán** mỗi điểm vào tâm gần nhất → **cập nhật** tâm = trung bình các điểm trong cụm.
+@@@ c6-9 | Phân cụm với K-Means
+@ftu: Outline Chương 5 – K-Means, Elbow method, Silhouette score; bộ câu hỏi câu 27 – phân cụm khách hàng
+@goal: Chuẩn hoá dữ liệu, chạy `KMeans`, đọc tâm cụm và mô tả từng cụm bằng groupby; chọn k bằng phương pháp khuỷu tay.
+@practice: ml12, tt306
 
 ```python
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 
-sales = pd.read_csv("sales.csv").drop_duplicates().dropna(subset=["quantity"])
-sales["revenue"] = sales["quantity"] * sales["unit_price"]
-cust = sales.groupby("customer_id")[["quantity", "revenue"]].sum()
-X = StandardScaler().fit_transform(cust)
+df = pd.read_csv("cars.csv", na_values="?").dropna()
+X = StandardScaler().fit_transform(df[["engine_size", "price"]])
 km = KMeans(n_clusters=3, n_init=10, random_state=0).fit(X)
-cust["cluster"] = km.labels_
-print(cust.groupby("cluster").mean().round(0))
-print("Inertia (tổng khoảng cách trong cụm):", round(km.inertia_, 2))
+df["cum"] = km.labels_
+print(df.groupby("cum")[["engine_size", "price"]].mean().round(0))
+print(df["cum"].value_counts().sort_index().tolist())
 ```
 
-Chọn k bằng **phương pháp khuỷu tay (elbow)**: vẽ inertia theo k, chọn điểm "gãy".
+Mô tả cụm bằng trung bình các biến gốc: ví dụ *cụm 0 = xe nhỏ giá rẻ, cụm 2 = xe sang động cơ lớn*.
 
-## 8. Tiền xử lý dữ liệu
-
-| Vấn đề | Giải pháp |
-|---|---|
-| Thang đo khác nhau | `StandardScaler` (z-score), `MinMaxScaler` ([0,1]) |
-| Biến phân loại (chữ) | `pd.get_dummies` / `OneHotEncoder` |
-| Ô trống | `dropna`, `fillna`, `SimpleImputer` |
+??
+`random_state=0` trong KMeans để:
+- [ ] Tăng độ chính xác
+- [x] Kết quả lặp lại được mỗi lần chạy (khởi tạo tâm cụm cố định)
+- [ ] Bắt buộc k = 0
+- [ ] Bỏ dữ liệu thiếu
+> KMeans khởi tạo tâm ngẫu nhiên; cố định seed để mọi người ra cùng kết quả.
 
 ```python
 import pandas as pd
-st = pd.read_csv("students.csv")
-X = pd.get_dummies(st[["class", "gender", "study_hours"]], columns=["class", "gender"], drop_first=True)
-X.head()
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
+
+df = pd.read_csv("cars.csv", na_values="?").dropna()
+X = StandardScaler().fit_transform(df[["engine_size", "price"]])
+inertia = [KMeans(n_clusters=k, n_init=10, random_state=0).fit(X).inertia_ for k in range(1, 8)]
+fig, ax = plt.subplots(figsize=(5, 3))
+ax.plot(range(1, 8), inertia, marker="o")
+ax.set_xlabel("k")
+ax.set_ylabel("Inertia")
+ax.set_title("Phương pháp khuỷu tay")
+plt.show()
 ```
 
-> **Rò rỉ dữ liệu (data leakage):** chỉ `fit` scaler trên tập **train**, rồi `transform` cả train và test. Dùng `Pipeline` để sklearn tự làm đúng.
+Ngoài khuỷu tay, có thể dùng **Silhouette score** (từ −1 đến 1, càng cao các cụm càng tách biệt):
+
+```python
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+
+df = pd.read_csv("cars.csv", na_values="?").dropna()
+X = StandardScaler().fit_transform(df[["engine_size", "price"]])
+for k in range(2, 6):
+    labels = KMeans(n_clusters=k, n_init=10, random_state=0).fit_predict(X)
+    print(k, round(silhouette_score(X, labels), 3))
+```
+
+??
+Trong phương pháp khuỷu tay, chọn k ở đâu?
+- [ ] Nơi inertia lớn nhất
+- [ ] k lớn nhất có thể
+- [x] Điểm "gãy" mà sau đó inertia giảm chậm hẳn lại
+- [ ] Luôn k = 2
+> Inertia luôn giảm khi k tăng (k = số điểm thì inertia = 0); chọn chỗ thêm cụm không còn đáng kể.
+
+??
+K-Means thuộc loại học nào?
+- [ ] Có giám sát – hồi quy
+- [ ] Có giám sát – phân loại
+- [x] Không giám sát
+- [ ] Học tăng cường
+> Không dùng nhãn y; tự tìm nhóm từ dữ liệu.

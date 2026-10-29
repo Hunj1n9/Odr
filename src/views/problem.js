@@ -1,6 +1,6 @@
 import { TOPICS } from "../content.js";
 import { gradeProblem, renderGrade } from "../grade.js";
-import { app, status } from "../state.js";
+import { app, status, unitNo } from "../state.js";
 import { store } from "../store.js";
 import { $, $$, createEditor, esc, levelBadge, md, highlightIn, runInto, setCrumbs, toast } from "../ui.js";
 
@@ -22,7 +22,10 @@ export function problemView(view, [id]) {
   <div class="row" style="margin-bottom:12px">
     <h1 style="margin:0">${esc(p.title)}</h1>
     ${levelBadge(p.level)}<span class="badge">${esc(TOPICS[p.topic]?.name || p.topic)}</span>
-    <span class="badge accent">${esc(p.source)}</span>
+    ${p.unit ? (() => {
+      const u = app.units.find((x) => x.id === p.unit);
+      return u ? `<a class="badge accent" href="#/learn/${u.lesson}/${u.id}" title="Về bài học">📖 Bài ${unitNo(u)}: ${esc(u.title)}</a>` : "";
+    })() : `<span class="badge accent">${esc(p.source)}</span>`}
     <span class="badge solved" id="solved-badge" ${status(id) === "solved" ? "" : "hidden"}>✓ Đã giải</span>
     <span class="spacer"></span>
     ${prev ? `<a class="btn small ghost" href="#/p/${prev.id}" title="${esc(prev.title)}">← Trước</a>` : ""}

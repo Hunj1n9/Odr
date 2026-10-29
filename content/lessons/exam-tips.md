@@ -2,6 +2,25 @@
 
 Thi cuối kỳ TIN314 = **thi thực hành trên máy 90 phút, chiếm 60% điểm**. Đề giữa kỳ cho thấy hình thức: *viết hàm đúng tên, hệ thống tự gọi hàm với nhiều bộ test ẩn và so sánh kết quả*.
 
+## 0. Đề thi cuối kỳ thật trông như thế nào?
+
+Tổng hợp từ các tài liệu TIN314 sinh viên FTU chia sẻ công khai trên Studocu (đề thực hành HK I 2024–2025 Cơ sở II, đề cuối kỳ mẫu, đề 5/1/2024, đề cương ôn tập cuối kỳ, bộ câu hỏi Final hè 2025, slide Buổi 6–8, bộ câu hỏi Lecture 7–11):
+
+| Phần | Điểm | Dạng câu hỏi | Luyện ở đâu |
+|---|---|---|---|
+| **I. Python cơ bản** | ~3 | kiểu dữ liệu, `len`, kiểm tra `in`, 10 phần tử đầu/cuối, đảo list, list comprehension có điều kiện, hàm tính toán, `input()`, cắt chuỗi, if–elif–else | [Bài "Dạng câu hỏi Phần I"](#/learn/ch2-python/c2-15), bài fe01–fe06 |
+| **II. Nhập & xem dữ liệu** | | tạo DataFrame từ dict / đọc CSV, `head(10)`, `info()`, `shape`, `loc`/`iloc` | [Bài 3.3–3.4](#/learn/ch3-io/c3-4), [4.3](#/learn/ch4-pandas/c4-3), fe07 |
+| **II. Dữ liệu thiếu** | ~2 | điền trung bình / mode, bỏ dòng thiếu ≥ 50%, bỏ dòng thiếu nhiều nhất, nội suy | [Bài 4.6](#/learn/ch4-pandas/c4-6), [4.13](#/learn/ch4-pandas/c4-13), fe08–fe09 |
+| **II. Trùng lặp** | ~3 | `drop_duplicates` (toàn bộ, theo cột, `keep="last"`), đánh dấu, đếm | [Bài 4.13](#/learn/ch4-pandas/c4-13), fe10–fe11 |
+| **II. Biến đổi** | ~2 | Min-Max, Z-score, chia max, `astype`, LabelEncoder, One-Hot, `cut`/`qcut` | [Bài 4.7–4.8](#/learn/ch4-pandas/c4-7), [4.14](#/learn/ch4-pandas/c4-14), fe12–fe14 |
+| **II. Biểu đồ** | ~1.5 | cột có giá trị trên cột, tròn có %, đường, phân tán; Seaborn `regplot`, `boxplot` | [Bài 5.9](#/learn/ch5-viz/c5-9), fe15–fe16 |
+| **II. EDA & mô hình** | | `describe`, `value_counts`, `groupby`, `crosstab`, `corr`; hồi quy đơn/bội: hệ số, intercept, R², MSE; Pipeline scale → polynomial → model | [Chương 6](#/learn/ch6-ml), fe17–fe18 |
+
+- Thi **thực hành trên máy**, làm trong file `.ipynb`, **không dùng tài liệu**, 75–90 phút.
+- Đề thật yêu cầu **"xuất ra màn hình"** kết quả mỗi ý → nhớ `print(df)` hoặc để `df` ở dòng cuối ô.
+- Mỗi ý thường thao tác trên **dữ liệu gốc** ("từ dữ liệu gốc") – đừng ghi đè `df` rồi dùng tiếp cho ý sau; dùng `df.copy()` hoặc biến mới.
+- Luyện cả đề: **Thi thử → "Đề dạng FTU 2024–2025"**.
+
 ## 1. Mười lỗi mất điểm phổ biến nhất
 
 | # | Lỗi | Cách tránh |

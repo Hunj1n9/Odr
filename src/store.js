@@ -9,6 +9,8 @@ const blank = () => ({
   revealed: {},   // id -> đã xem lời giải
   quiz: {},       // chương -> {best, last, total}
   quizWrong: {},  // id câu hỏi -> số lần sai
+  quizOk: {},     // id câu hỏi -> thời điểm trả lời đúng
+  units: {},      // id bài học nhỏ -> thời điểm hoàn thành
   exams: [],      // lịch sử thi thử
   exam: null,     // bài thi đang làm dở
   read: {},       // bài giảng đã học

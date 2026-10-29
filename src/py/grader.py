@@ -18,6 +18,7 @@ import warnings
 
 os.environ.setdefault("MPLBACKEND", "AGG")
 warnings.filterwarnings("ignore", message=r"(?s).*Pyarrow will become a required dependency")
+warnings.filterwarnings("ignore", message=r".*non-GUI backend")
 
 USER_FILE = "<bài làm>"
 MAX_REPR = 800

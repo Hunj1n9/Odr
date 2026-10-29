@@ -4,7 +4,7 @@
     {
       "name": "tin314",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "5314"],
+      "runtimeArgs": ["scripts/serve.py", "5314"],
       "port": 5314
     }
   ]

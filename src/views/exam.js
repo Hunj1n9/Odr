@@ -18,6 +18,20 @@ const PRESETS = {
       (p) => ["ml", "eval", "viz"].includes(p.topic) && p.file !== "03-collection.md",
     ],
   },
+  ftu: {
+    title: "Đề dạng FTU 2024–2025 – 90 phút, 7 câu",
+    minutes: 90,
+    desc: "Theo cấu trúc đề thật: Phần I Python cơ bản (3 điểm) + Phần II làm sạch dữ liệu, trùng lặp, chuẩn hoá/mã hoá, biểu đồ, hồi quy (7 điểm).",
+    slots: [
+      (p) => ["fe01", "fe02", "fe03", "fe04", "fe05", "fe06"].includes(p.id),
+      (p) => ["fe03", "fe04", "fe05", "fe06"].includes(p.id),
+      (p) => ["fe07", "fe08", "fe09"].includes(p.id),
+      (p) => ["fe10", "fe11", "fe14"].includes(p.id),
+      (p) => ["fe12", "fe13"].includes(p.id),
+      (p) => ["fe15", "fe16"].includes(p.id),
+      (p) => ["fe17", "fe18"].includes(p.id),
+    ],
+  },
   midterm: {
     title: "Đề giữa kỳ – 60 phút, 5 câu",
     minutes: 60,
@@ -43,7 +57,8 @@ const PRESETS = {
   quick: {
     title: "Luyện nhanh – 20 phút, 3 câu",
     minutes: 20,
-    desc: "3 câu dễ–trung bình để khởi động mỗi ngày.",
+    desc: "3 câu dễ–trung bình để khởi động mỗi ngày (có cả bài tập theo bài học).",
+    lessonOk: true,
     slots: [
       (p) => p.level === "easy" && p.file !== "06-viz.md",
       (p) => p.level === "easy" && p.file !== "06-viz.md",
@@ -55,7 +70,7 @@ const PRESETS = {
 function pickProblems(preset) {
   const used = new Set();
   return preset.slots.map((filter) => {
-    const pool = shuffle(app.problems.filter((p) => filter(p) && !used.has(p.id)));
+    const pool = shuffle(app.problems.filter((p) => filter(p) && !used.has(p.id) && (preset.lessonOk || !p.unit)));
     const unsolvedFirst = pool.sort((a, b) => !!store.data.solved[a.id] - !!store.data.solved[b.id]);
     const p = unsolvedFirst[0];
     if (p) used.add(p.id);

@@ -1,6 +1,9 @@
 import { app } from "../state.js";
 import { store } from "../store.js";
-import { $, esc, highlightIn, md, setCrumbs, shuffle } from "../ui.js";
+import { mountQuiz } from "../quizbox.js";
+import { $, esc, setCrumbs, shuffle } from "../ui.js";
+
+const ROUND = 20;
 
 const CHAPTERS = {
   1: "Giới thiệu Python cho KHDL", 2: "Python cơ bản", 3: "Nhập & tải dữ liệu, NumPy", 4: "Pandas",
@@ -14,19 +17,20 @@ export function quizListView(view) {
   const wrongCount = app.quizzes.filter((q) => d.quizWrong[q.id]).length;
   view.innerHTML = `
     <h1>Trắc nghiệm kiến thức</h1>
-    <p class="muted">Phần lớn là câu "đoán output của đoạn code" – kỹ năng đọc code giúp bạn tìm lỗi nhanh khi thi thực hành.</p>
+    <p class="muted">${app.quizzes.length} câu hỏi, gồm câu kiểm tra nhanh của từng bài học và câu tổng hợp theo chương. Phần lớn là "đoán output của đoạn code" – kỹ năng đọc code giúp bạn tìm lỗi nhanh khi thi thực hành.</p>
     <div class="row" style="margin:14px 0">
-      <a class="btn primary" href="#/quiz/mix">🎲 Đề tổng hợp 20 câu ngẫu nhiên</a>
+      <a class="btn primary" href="#/quiz/mix">🎲 Đề tổng hợp 30 câu ngẫu nhiên</a>
       ${wrongCount ? `<a class="btn" href="#/quiz/wrong">↻ Ôn lại ${wrongCount} câu từng làm sai</a>` : ""}
     </div>
     <div class="grid cols-3">
       ${chapters.map((c) => {
         const n = app.quizzes.filter((q) => q.chapter === c).length;
+        const okN = app.quizzes.filter((q) => q.chapter === c && d.quizOk[q.id]).length;
         const r = d.quiz[c];
         return `<a class="card chapter-card" href="#/quiz/${c}">
           <span class="chapter-num">CHƯƠNG ${c}</span><strong>${esc(CHAPTERS[c] || "")}</strong>
-          <span class="muted small">${n} câu${r ? ` · cao nhất ${r.best}% · lần cuối ${r.last}%` : ""}</span>
-          ${r ? `<div class="bar ok"><span style="width:${r.best}%"></span></div>` : ""}
+          <span class="muted small">${n} câu · đã đúng ${okN}${r ? ` · lượt gần nhất ${r.last}%` : ""}</span>
+          <div class="bar ok"><span style="width:${n ? (okN / n) * 100 : 0}%"></span></div>
         </a>`;
       }).join("")}
     </div>`;
@@ -35,15 +39,23 @@ export function quizListView(view) {
 export function quizView(view, [key]) {
   let pool;
   let title;
+  let note = "";
   if (key === "mix") {
-    pool = shuffle(app.quizzes).slice(0, 20);
-    title = "Đề tổng hợp";
+    pool = shuffle(app.quizzes).slice(0, 30);
+    title = "Đề tổng hợp 30 câu";
   } else if (key === "wrong") {
     pool = shuffle(app.quizzes.filter((q) => store.data.quizWrong[q.id]));
     title = "Ôn câu từng sai";
   } else {
-    pool = shuffle(app.quizzes.filter((q) => String(q.chapter) === key));
+    // mỗi lượt tối đa 20 câu, ưu tiên câu chưa từng trả lời đúng để không bị ngợp
+    const all = app.quizzes.filter((q) => String(q.chapter) === key);
+    const fresh = shuffle(all.filter((q) => !store.data.quizOk[q.id]));
+    const done = shuffle(all.filter((q) => store.data.quizOk[q.id]));
+    pool = [...fresh, ...done].slice(0, ROUND);
     title = `Chương ${key}: ${CHAPTERS[key] || ""}`;
+    if (all.length > ROUND) {
+      note = `Chương có ${all.length} câu – mỗi lượt lấy ${ROUND} câu, ưu tiên ${fresh.length} câu bạn chưa trả lời đúng. Làm xong bấm "Làm lượt mới".`;
+    }
   }
   setCrumbs([["Trắc nghiệm", "#/quiz"], [title]]);
   if (!pool.length) {
@@ -55,43 +67,26 @@ export function quizView(view, [key]) {
   view.innerHTML = `<div class="lesson">
     <div class="row"><h1 style="margin:0">${esc(title)}</h1><span class="spacer"></span>
       <span class="badge accent" id="score">0/${pool.length}</span></div>
+    ${note ? `<p class="muted small">${esc(note)}</p>` : ""}
     <div id="qs" style="margin-top:16px"></div>
     <div id="summary"></div></div>`;
   const qs = $("#qs", view);
-  pool.forEach((q0, i) => {
-    // đảo thứ tự phương án để không "học thuộc vị trí" đáp án
-    const order = shuffle(q0.options.map((_, j) => j));
-    const q = { ...q0, options: order.map((j) => q0.options[j]), answer: order.indexOf(q0.answer) };
+  pool.forEach((q, i) => {
     const box = document.createElement("div");
-    box.className = "card quiz-q";
-    box.innerHTML = `<div class="md"><b>Câu ${i + 1}.</b> ${md(q.question)}</div>
-      <div class="quiz-opts">${q.options.map((o, j) => `<button class="quiz-opt" data-j="${j}"><b>${"ABCDEF"[j]}.</b> ${md(o).replace(/^<p>|<\/p>\s*$/g, "")}</button>`).join("")}</div>
-      <div class="quiz-explain md" hidden></div>`;
+    box.className = "card";
     qs.appendChild(box);
-    highlightIn(box);
-    box.querySelectorAll(".quiz-opt").forEach((btn) => {
-      btn.onclick = () => {
-        const j = Number(btn.dataset.j);
-        const ok = j === q.answer;
-        box.querySelectorAll(".quiz-opt").forEach((b) => {
-          b.disabled = true;
-          const bj = Number(b.dataset.j);
-          if (bj === q.answer) b.classList.add("right");
-          else if (bj === j) b.classList.add("wrong");
-        });
-        const ex = box.querySelector(".quiz-explain");
-        ex.hidden = false;
-        ex.innerHTML = `<b>${ok ? "✓ Chính xác." : "✗ Chưa đúng."}</b> ${md(q.explain)}`;
-        highlightIn(ex);
+    let counted = false;
+    mountQuiz(box, q, {
+      label: `Câu ${i + 1}.`,
+      onAnswer: (ok) => {
+        // chỉ tính điểm lần trả lời đầu tiên
+        if (counted) return;
+        counted = true;
         answered++;
         if (ok) correct++;
-        store.update((d) => {
-          if (ok) delete d.quizWrong[q.id];
-          else d.quizWrong[q.id] = (d.quizWrong[q.id] || 0) + 1;
-        });
         $("#score", view).textContent = `${correct}/${pool.length}`;
         if (answered === pool.length) finish();
-      };
+      },
     });
   });
 
@@ -109,7 +104,7 @@ export function quizView(view, [key]) {
       <p>Đúng ${correct}/${pool.length} câu. ${pct >= 80 ? "Rất tốt! 🎉" : "Ôn lại phần giải thích các câu sai rồi làm lại nhé."}</p>
       <div class="row" style="justify-content:center">
         <a class="btn" href="#/quiz">Danh sách trắc nghiệm</a>
-        <button class="btn primary" id="again">Làm lại (đảo câu)</button>
+        <button class="btn primary" id="again">Làm lượt mới</button>
       </div></div>`;
     $("#again", view).onclick = () => quizView(view, [key]);
     $("#summary", view).scrollIntoView({ behavior: "smooth" });

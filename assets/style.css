@@ -263,6 +263,39 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent-soft
 .chapter-card:hover { text-decoration: none; border-color: var(--accent); }
 .chapter-num { font: 700 .8rem var(--mono); color: var(--accent); }
 
+/* ---------- bài học nhỏ ---------- */
+.chapter-link { display: flex; flex-direction: column; gap: 6px; color: var(--text); }
+.chapter-link:hover { text-decoration: none; color: var(--accent); }
+.unit-pills, .stepper { display: flex; flex-wrap: wrap; gap: 5px; }
+.unit-pills a, .stepper a {
+  min-width: 28px; height: 28px; padding: 0 6px; border-radius: 8px; display: inline-grid; place-items: center;
+  border: 1px solid var(--border); background: var(--surface); color: var(--muted); font: 600 .78rem var(--mono);
+}
+.unit-pills a:hover, .stepper a:hover { border-color: var(--accent); text-decoration: none; }
+.unit-pills a.done, .stepper a.done { background: var(--ok-soft); border-color: var(--ok); color: var(--ok); }
+.stepper { margin-bottom: 14px; }
+.stepper a.cur { background: var(--accent); border-color: var(--accent); color: #fff; }
+.goal { padding: 10px 14px; border-radius: 10px; background: var(--accent-soft); margin: 4px 0 16px; }
+.roadmap { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; counter-reset: none; }
+.roadmap a {
+  display: grid; grid-template-columns: 46px minmax(0, 1fr); gap: 12px; align-items: start; padding: 12px 14px;
+  border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); color: var(--text);
+}
+.roadmap a:hover { border-color: var(--accent); text-decoration: none; }
+.rm-no { font: 700 .95rem var(--mono); color: var(--accent); background: var(--accent-soft); border-radius: 8px; text-align: center; padding: 6px 0; }
+.roadmap li.done .rm-no { color: var(--ok); background: var(--ok-soft); }
+.rm-body { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.rm-meta { display: flex; gap: 12px; font-size: .78rem; color: var(--muted); }
+.quick-check { border-left: 4px solid var(--accent); margin: 18px 0; }
+.quick-check .quiz-opt { padding: 8px 12px; }
+.exercise { margin: 14px 0; }
+.ex-head { margin-bottom: 8px; }
+.ex-statement { margin-bottom: 10px; }
+.ex-out, .ex-grade:not(:empty), .ex-sol, .ex-hints:not(:empty) { margin-top: 10px; }
+.finish { margin-top: 24px; }
+.ok-text { color: var(--ok); }
+.quiz-explain .retry { margin-top: 8px; }
+
 /* ---------- quiz ---------- */
 .quiz-q { margin-bottom: 18px; }
 .quiz-opts { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }

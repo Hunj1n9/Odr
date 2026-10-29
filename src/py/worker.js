@@ -23,7 +23,16 @@ async function init(datasets) {
   for (const [name, content] of Object.entries(datasets || {})) py.FS.writeFile(name, content);
 }
 
+let seabornReady = false;
+
 async function loadImports(code) {
+  // seaborn không có sẵn trong Pyodide: cài từ PyPI bằng micropip (thuần Python)
+  if (!seabornReady && /^\s*(import|from)\s+seaborn\b/m.test(code)) {
+    post("status", { text: "Đang tải thư viện Seaborn…" });
+    await py.loadPackage(["micropip", "matplotlib", "pandas", "scipy"]);
+    await py.runPythonAsync("import micropip\nawait micropip.install('seaborn==0.13.2')");
+    seabornReady = true;
+  }
   await py.loadPackagesFromImports(code, {
     messageCallback: (msg) => {
       const m = msg.match(/^Loading (.+)$/);

@@ -81,16 +81,69 @@ function stocksCsv() {
   return rows.join("\n") + "\n";
 }
 
+// Dữ liệu ô tô kiểu "Automobile" (khoá IBM Data Analysis with Python): ô thiếu ghi bằng "?".
+function carsCsv() {
+  const r = rng(2024);
+  const makes = [["toyota", 0.9], ["honda", 0.95], ["mazda", 1.0], ["bmw", 1.6], ["audi", 1.5], ["volvo", 1.3], ["nissan", 0.95], ["mercedes", 1.8]];
+  const rows = ["make,fuel_type,body_style,drive_wheels,engine_size,horsepower,curb_weight,city_mpg,highway_mpg,price"];
+  for (let i = 1; i <= 80; i++) {
+    const [make, lux] = pick(r, makes);
+    const fuel = r() < 0.15 ? "diesel" : "gas";
+    const body = pick(r, ["sedan", "sedan", "hatchback", "wagon", "convertible"]);
+    const drive = lux > 1.2 ? (r() < 0.8 ? "rwd" : "4wd") : (r() < 0.8 ? "fwd" : "rwd");
+    const engine = Math.round(90 + r() * 120 + (lux - 1) * 60);
+    const hp = Math.round(engine * (0.62 + r() * 0.25));
+    const weight = Math.round(1900 + engine * 6 + r() * 500);
+    const city = Math.round(52 - engine * 0.13 - r() * 6 + (fuel === "diesel" ? 5 : 0));
+    const highway = city + 4 + Math.floor(r() * 5);
+    const price = Math.round((engine * 75 + hp * 60 + weight * 1.5 - 4000) * lux + (r() - 0.5) * 3000);
+    const cells = [make, fuel, body, drive, engine, hp, weight, city, highway, price];
+    if (i % 13 === 0) cells[5] = "?";   // thiếu horsepower
+    if (i % 19 === 0) cells[9] = "?";   // thiếu giá
+    rows.push(cells.join(","));
+  }
+  return rows.join("\n") + "\n";
+}
+
+// Dữ liệu giá nhà kiểu "King County house sales" (đề cuối kỳ mẫu TIN314 dùng bộ này).
+function housesCsv() {
+  const r = rng(1960);
+  const rows = ["id,date,price,bedrooms,bathrooms,sqft_living,sqft_lot,floors,waterfront,view,condition,grade,sqft_above,sqft_basement,lat"];
+  for (let i = 1; i <= 120; i++) {
+    const bedrooms = 1 + Math.floor(r() * 5);
+    const bathrooms = Math.max(1, Math.round((bedrooms * 0.6 + r() * 1.5) * 4) / 4);
+    const grade = 5 + Math.floor(r() * 6 + bedrooms * 0.3);
+    const living = Math.round((600 + bedrooms * 380 + grade * 120 + r() * 600) / 10) * 10;
+    const basement = r() < 0.4 ? Math.round(living * (0.15 + r() * 0.25) / 10) * 10 : 0;
+    const floors = [1, 1, 1.5, 2, 2, 3][Math.floor(r() * 6)];
+    const waterfront = r() < 0.06 ? 1 : 0;
+    const view = waterfront ? 3 + Math.floor(r() * 2) : Math.floor(r() * r() * 4);
+    const condition = 2 + Math.floor(r() * 4);
+    const lat = Math.round((47.2 + r() * 0.55) * 10000) / 10000;
+    const lot = Math.round((3000 + r() * 12000) / 10) * 10;
+    const price = Math.round((-900000 + living * 210 + grade * 95000 + waterfront * 600000 + view * 45000
+      + (lat - 47.2) * 900000 + bathrooms * 20000 + (r() - 0.5) * 160000) / 1000) * 1000;
+    const month = 1 + Math.floor(r() * 12);
+    rows.push([7000000 + i * 137, `2014-${pad(month)}-${pad(1 + Math.floor(r() * 28))}`, Math.max(price, 90000), bedrooms, bathrooms,
+      living, lot, floors, waterfront, view, condition, grade, living - basement, basement, lat].join(","));
+  }
+  return rows.join("\n") + "\n";
+}
+
 export const DATASETS = {
   "sales.csv": salesCsv(),
   "customers.csv": customersCsv(),
   "students.csv": studentsCsv(),
   "stocks.csv": stocksCsv(),
+  "cars.csv": carsCsv(),
+  "houses.csv": housesCsv(),
 };
 
 export const DATASET_INFO = [
   { name: "sales.csv", desc: "61 đơn hàng 6 tháng đầu 2024: order_id, date, region, customer_id, product, category, quantity, unit_price (có ô trống + 1 dòng trùng)" },
   { name: "customers.csv", desc: "11 khách hàng: customer_id, name, tier, age" },
   { name: "students.csv", desc: "40 sinh viên: student_id, name, class, gender, attendance (/15), study_hours, midterm, final (có ô trống)" },
+  { name: "cars.csv", desc: "80 ô tô: make, fuel_type, body_style, drive_wheels, engine_size, horsepower, curb_weight, city_mpg, highway_mpg, price (ô thiếu ghi \"?\")" },
+  { name: "houses.csv", desc: "120 căn nhà kiểu King County: price, bedrooms, bathrooms, sqft_living, sqft_lot, floors, waterfront, view, condition, grade, sqft_above, sqft_basement, lat" },
   { name: "stocks.csv", desc: "Giá đóng cửa 3 mã VNM, FPT, HPG trong 20 ngày: date, ticker, close, volume" },
 ];

@@ -4,7 +4,7 @@ import { app, solvedCount } from "./state.js";
 import { store } from "./store.js";
 import { $, $$, esc, setCrumbs } from "./ui.js";
 import { homeView } from "./views/home.js";
-import { learnListView, lessonView } from "./views/learn.js";
+import { learnListView, lessonView, unitView } from "./views/learn.js";
 import { problemsView } from "./views/problems.js";
 import { problemView } from "./views/problem.js";
 import { quizListView, quizView } from "./views/quiz.js";
@@ -16,6 +16,7 @@ const routes = [
   [/^learn$/, "learn", learnListView],
   [/^learn\/exam-tips$/, "tips", lessonView],
   [/^learn\/([\w-]+)$/, "learn", lessonView],
+  [/^learn\/([\w-]+)\/([\w.-]+)$/, "learn", unitView],
   [/^problems$/, "problems", problemsView],
   [/^p\/([\w-]+)$/, "problems", problemView],
   [/^quiz$/, "quiz", quizListView],

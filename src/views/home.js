@@ -1,10 +1,10 @@
-import { app, SETS, solvedCount, nextUnsolved } from "../state.js";
+import { app, SETS, setOf, solvedCount, nextUnsolved, nextUnit, unitNo } from "../state.js";
 import { TOPICS } from "../content.js";
 import { store } from "../store.js";
 import { esc, fmtDate, setCrumbs, toast } from "../ui.js";
 
 const PLAN = [
-  ["Tuần 1", "Nền tảng", "Chương 1–2 + 20 bài Khởi động. Mục tiêu: viết hàm, if/for/while, list/dict/string không cần tra cứu.", "#/learn/ch2-python"],
+  ["Tuần 1", "Nền tảng", "Học các bài nhỏ Chương 1–2 (mỗi ngày 3–4 bài) + 20 bài Khởi động. Mục tiêu: viết hàm, if/for/while, list/dict/string không cần tra cứu.", "#/learn/ch2-python"],
   ["Tuần 2", "Đề giữa kỳ", "Làm hết 34 câu Đề giữa kì + Tuyển tập phần 1–2. Mỗi câu sai: đọc giải thích, làm lại sau 2 ngày.", "#/problems?set=midterm"],
   ["Tuần 3", "Dữ liệu", "Chương 3–5: NumPy, Pandas, trực quan hoá. Luyện trên sales.csv / students.csv trong Sổ tay.", "#/learn/ch4-pandas"],
   ["Tuần 4", "Học máy & thi thử", "Chương 6–7 + bộ Học máy. Thi thử 90 phút ít nhất 3 lần, mục tiêu ≥ 8.5 điểm.", "#/exam"],
@@ -16,14 +16,13 @@ export function homeView(view) {
   const total = app.problems.length;
   const solved = solvedCount();
   const pct = total ? Math.round((solved / total) * 100) : 0;
-  const lessons = app.lessons.filter((l) => l.chapter);
-  const readCount = lessons.filter((l) => d.read[l.id]).length;
+  const unitsDone = app.units.filter((u) => d.units[u.id]).length;
   const quizVals = Object.values(d.quiz);
   const quizAvg = quizVals.length ? Math.round(quizVals.reduce((s, q) => s + q.best, 0) / quizVals.length) : null;
   const lastExam = d.exams[d.exams.length - 1];
   const bestExam = d.exams.length ? Math.max(...d.exams.map((e) => e.score)) : null;
   const next = nextUnsolved();
-  const nextLesson = lessons.find((l) => !d.read[l.id]);
+  const nu = nextUnit();
 
   // điểm yếu: chủ đề có tỉ lệ giải thấp nhất trong các chủ đề đã thử
   const weak = Object.entries(TOPICS).map(([key, t]) => {
@@ -41,7 +40,7 @@ export function homeView(view) {
       <p class="muted" style="margin:.2rem 0 .8rem">Lập trình cho phân tích dữ liệu và tính toán khoa học – Python chạy thật ngay trên trình duyệt,
       chấm bài tự động giống CodeRunner. Thi cuối kỳ là <b>thi thực hành trên máy 90 phút (60% điểm)</b> – luyện code mỗi ngày là chìa khoá.</p>
       <div class="row">
-        ${nextLesson ? `<a class="btn" href="#/learn/${nextLesson.id}">▤ Học tiếp: ${esc(nextLesson.title)}</a>` : ""}
+        ${nu ? `<a class="btn" href="#/learn/${nu.lesson}/${nu.id}">▤ Học tiếp: Bài ${unitNo(nu)} – ${esc(nu.title)}</a>` : ""}
         ${next ? `<a class="btn primary" href="#/p/${next.id}">⌨ Làm bài tiếp: ${esc(next.title)}</a>` : `<span class="badge solved">Đã giải hết tất cả bài!</span>`}
         <a class="btn" href="#/exam">⏱ Thi thử</a>
       </div>
@@ -50,7 +49,7 @@ export function homeView(view) {
 
   <div class="grid cols-4" style="margin-top:16px">
     <div class="card stat"><span class="num">${solved}<span class="muted small">/${total}</span></span><span class="lbl">Bài code đã giải</span></div>
-    <div class="card stat"><span class="num">${readCount}<span class="muted small">/${lessons.length}</span></span><span class="lbl">Chương đã học</span></div>
+    <div class="card stat"><span class="num">${unitsDone}<span class="muted small">/${app.units.length}</span></span><span class="lbl">Bài học nhỏ đã xong</span></div>
     <div class="card stat"><span class="num">${quizAvg === null ? "–" : quizAvg + "%"}</span><span class="lbl">Trắc nghiệm (TB điểm cao nhất)</span></div>
     <div class="card stat"><span class="num">${lastExam ? lastExam.score.toFixed(2) : "–"}</span><span class="lbl">Thi thử gần nhất${bestExam !== null ? ` · cao nhất ${bestExam.toFixed(2)}` : ""}</span></div>
   </div>
@@ -58,7 +57,7 @@ export function homeView(view) {
   <h2>Bộ bài tập</h2>
   <div class="grid cols-3">
     ${SETS.map((s) => {
-      const ps = app.problems.filter((p) => p.file === s.key);
+      const ps = app.problems.filter((p) => setOf(p) === s);
       const ok = ps.filter((p) => d.solved[p.id]).length;
       return `<a class="card chapter-card" href="#/problems?set=${s.short}">
         <div class="row"><strong>${esc(s.name)}</strong><span class="spacer"></span><span class="muted small">${ok}/${ps.length}</span></div>
