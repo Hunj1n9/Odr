@@ -9,7 +9,7 @@ export function mountQuiz(box, q0, { label = "", onAnswer } = {}) {
   const q = { ...q0, options: order.map((j) => q0.options[j]), answer: order.indexOf(q0.answer) };
   const before = !!store.data.quizOk[q.id];
   box.classList.add("quiz-q");
-  box.innerHTML = `<div class="md">${label ? `<b>${label}</b> ` : ""}${md(q.question)}</div>
+  box.innerHTML = `${label ? `<div class="quiz-head"><span class="tag tag-ask">${label.replace(/:$/, "")}</span><span class="muted small">Chọn một đáp án</span></div>` : ""}<div class="md">${md(q.question)}</div>
     <div class="quiz-opts">${q.options.map((o, j) => `<button class="quiz-opt" data-j="${j}"><b>${"ABCDEF"[j]}.</b> ${md(o).replace(/^<p>|<\/p>\s*$/g, "")}</button>`).join("")}</div>
     <div class="quiz-explain md" hidden></div>
     ${before ? `<div class="muted small quiz-prev">✓ Bạn đã trả lời đúng câu này trước đây</div>` : ""}`;

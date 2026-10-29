@@ -450,7 +450,6 @@ textarea { border-radius: 16px; }
 /* ---------- bài học: luồng đọc rõ ràng ---------- */
 .unit .md { font-size: 1.02rem; line-height: 1.8; }
 .unit .md p { margin: .75rem 0; }
-.unit .md h3 { font-size: 1.2rem; margin: 2rem 0 .6rem; padding-left: 12px; border-left: 4px solid var(--accent-bright); }
 .unit .md ul, .unit .md ol { margin: .7rem 0; }
 .unit .md li { margin: .35rem 0; }
 .unit .md strong { font-weight: 650; }
@@ -490,3 +489,35 @@ details.src summary { cursor: pointer; }
   .term { grid-template-columns: minmax(0, 1fr); gap: 2px; }
 }
 .start, .cell, .quick-check, .step-h { scroll-margin-top: 72px; }
+
+/* ---------- đoạn học: mỗi ý một thẻ ---------- */
+.unit .body > .chunk { background: var(--surface); border-radius: 24px; padding: 22px 26px; margin: 0 0 16px; box-shadow: var(--shadow); }
+.unit .body > .chunk[data-n="0"] { background: transparent; box-shadow: none; padding: 0 4px; }
+.chunk > h2, .chunk > h3 { display: flex; align-items: center; gap: 12px; margin: 0 0 .6rem; font-size: 1.2rem; }
+.chunk-n { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: var(--bg); font: 700 .85rem var(--mono); }
+.chunk > :last-child { margin-bottom: 0; }
+
+/* ô code: thanh công cụ gắn liền với editor */
+.unit .cell { border: 1px solid var(--border); border-radius: 18px; overflow: hidden; margin: 14px 0; background: var(--code-bg); }
+.cell-head { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: var(--surface-2); border-bottom: 1px solid var(--border); }
+.cell-head .tag { margin: 0; }
+.cell-head .btn { padding: 5px 16px; }
+.unit .cell .editor { border: none; border-radius: 0; }
+.unit .cell .output { margin: 0; border: none; border-top: 1px dashed var(--border); border-radius: 0; }
+.cell-label { display: none; }
+
+/* giải thích ngay sau ô code */
+.unit .cell + ul, .unit .cell + ol { position: relative; margin: 14px 0 0; padding: 30px 18px 12px 38px; border-radius: 16px; background: color-mix(in srgb, var(--accent-bright) 10%, transparent); }
+.unit .cell + ul::before, .unit .cell + ol::before { content: "Giải thích"; position: absolute; top: 9px; left: 14px; font: 700 .7rem var(--sans); text-transform: uppercase; letter-spacing: .06em; color: var(--accent); }
+
+/* câu hỏi nhanh: khối riêng, dễ nhận ra */
+.unit .quick-check { background: var(--pastel-sand); border: none; border-radius: 20px; box-shadow: none; padding: 16px 20px; margin: 18px 0 4px; }
+.quiz-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.tag-ask { background: var(--ink); color: var(--bg); margin: 0; }
+.quick-check .quiz-opts { gap: 6px; }
+.quick-check .quiz-opt { background: var(--surface); padding: 8px 14px; border-radius: 12px; }
+.quick-check .quiz-opt.right { background: var(--ok-soft); }
+.quick-check .quiz-opt.wrong { background: var(--bad-soft); }
+.quick-check .quiz-explain { background: var(--surface); }
+.quick-check .md p { margin: .4rem 0; }
+@media (max-width: 640px) { .unit .body > .chunk { padding: 18px 16px; } }

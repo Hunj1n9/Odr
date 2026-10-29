@@ -61,12 +61,14 @@ export function hydrateCells(root) {
   for (const cell of $$(".cell[data-code]", root)) {
     const code = decode(cell.dataset.code);
     cell.removeAttribute("data-code");
-    cell.innerHTML = `<div class="editor"></div>
-      <div class="cell-bar">
-        <button class="btn small primary run">Chạy</button>
+    cell.innerHTML = `<div class="cell-head">
+        <span class="tag tag-try">Thử ngay</span>
+        <span class="muted small hint">Sửa code rồi chạy lại · Ctrl+Enter</span>
+        <span class="spacer"></span>
         <button class="btn small ghost reset" title="Khôi phục code gốc">Làm lại</button>
-        <span class="muted small">Ctrl+Enter để chạy</span>
+        <button class="btn small primary run">Chạy</button>
       </div>
+      <div class="editor"></div>
       <div class="output"></div>`;
     const out = $(".output", cell);
     const run = () => runInto(ed.getValue(), out);

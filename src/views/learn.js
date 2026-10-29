@@ -97,6 +97,29 @@ export function lessonView(view, [id = "exam-tips"]) {
   renderMarkdownInto($(".body", view), lesson.body, { runnable: true });
 }
 
+// Chia thân bài thành các "đoạn học" (mỗi tiêu đề mục là một thẻ, có số thứ tự) để biết đang ở ý nào.
+function chunkBody(body) {
+  const kids = [...body.children];
+  const mk = (n) => {
+    const c = document.createElement("section");
+    c.className = "chunk";
+    if (n) c.dataset.n = n;
+    body.appendChild(c);
+    return c;
+  };
+  body.innerHTML = "";
+  let n = 0;
+  let cur = null;
+  for (const el of kids) {
+    if (/^H[23]$/.test(el.tagName)) {
+      cur = mk(++n);
+      el.insertAdjacentHTML("afterbegin", `<span class="chunk-n">${n}</span>`);
+    } else if (!cur) cur = mk(0);
+    cur.appendChild(el);
+  }
+  if (n && body.firstElementChild?.dataset.n === "0" && !body.firstElementChild.textContent.trim()) body.firstElementChild.remove();
+}
+
 // Dựng phần đầu bài: dải "bài này làm gì" + khung "Bắt đầu từ đây" (mục tiêu, hiểu nhanh, từ mới).
 function buildStart(view, u, exCount) {
   const body = $(".body", view);
@@ -117,9 +140,7 @@ function buildStart(view, u, exCount) {
     ${terms ? `<div class="start-row"><span class="lbl">Từ mới</span><div class="terms">${terms}</div></div>` : ""}`;
   if (!say && !terms && !u.goal) $("#start", view).remove();
 
-  // nhãn cho từng loại nội dung để biết "đang cần làm gì"
   const cells = [...body.querySelectorAll(".cell")];
-  cells.forEach((c) => c.insertAdjacentHTML("afterbegin", `<div class="cell-label"><span class="tag tag-try">Thử ngay</span>Bấm <b>Chạy</b>, rồi sửa vài chữ và chạy lại</div>`));
   const quizzes = [...body.querySelectorAll(".quick-check")];
   const steps = [
     ["Đọc phần Bắt đầu từ đây", "#start"],
@@ -127,6 +148,7 @@ function buildStart(view, u, exCount) {
     quizzes.length ? [`Trả lời (${quizzes.length} câu)`, quizzes[0]] : null,
     exCount ? [`Tự làm (${exCount} bài)`, $("#ex-h", view)] : null,
   ].filter(Boolean);
+  chunkBody(body);
   const path = $("#path", view);
   path.innerHTML = `<span class="path-t">Bài này gồm:</span>` + steps.map(([t], k) => `<button type="button" class="path-s"><i>${k + 1}</i>${t}</button>`).join("");
   path.querySelectorAll("button").forEach((b, k) => {
