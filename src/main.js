@@ -91,6 +91,8 @@ function initTheme() {
 async function main() {
   initTheme();
   $("#menu-btn").onclick = () => $("#sidebar").classList.toggle("open");
+$("#scrim").onclick = () => $("#sidebar").classList.remove("open");
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") $("#sidebar").classList.remove("open"); });
   py.onState((state, text) => {
     const el = $("#py-status");
     el.dataset.state = state;
