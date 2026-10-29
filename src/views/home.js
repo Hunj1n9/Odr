@@ -36,7 +36,7 @@ export function homeView(view) {
   <div class="card hero">
     <div class="ring" style="--p:${pct}"><div>${pct}%</div></div>
     <div style="flex:1;min-width:0">
-      <h1>Chinh phục TIN314 🚀</h1>
+      <h1>Chinh phục <b>TIN314</b> 🚀</h1>
       <p class="muted" style="margin:.2rem 0 .8rem">Lập trình cho phân tích dữ liệu và tính toán khoa học – Python chạy thật ngay trên trình duyệt,
       chấm bài tự động giống CodeRunner. Thi cuối kỳ là <b>thi thực hành trên máy 90 phút (60% điểm)</b> – luyện code mỗi ngày là chìa khoá.</p>
       <div class="row">
@@ -55,7 +55,7 @@ export function homeView(view) {
   </div>
 
   <h2>Bộ bài tập</h2>
-  <div class="grid cols-3">
+  <div class="grid cols-3 sets">
     ${SETS.map((s) => {
       const ps = app.problems.filter((p) => setOf(p) === s);
       const ok = ps.filter((p) => d.solved[p.id]).length;
