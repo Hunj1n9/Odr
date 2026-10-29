@@ -1,0 +1,14 @@
+{
+  "name": "tin314-study",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Website học & luyện thi TIN314 – Lập trình cho phân tích dữ liệu và tính toán khoa học (FTU)",
+  "scripts": {
+    "start": "python3 -m http.server 5314",
+    "validate": "node scripts/validate.mjs"
+  },
+  "devDependencies": {
+    "pyodide": "0.26.4"
+  }
+}

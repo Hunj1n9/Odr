@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TIN314 Lab – Học & luyện thi Python phân tích dữ liệu</title>
+  <meta name="description" content="Học và luyện thi TIN314 (FTU): bài giảng 8 chương, 140+ bài code chấm tự động, trắc nghiệm, thi thử 90 phút – chạy Python thật ngay trên trình duyệt.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%232f6fde'/><text x='32' y='44' font-size='30' text-anchor='middle' fill='white' font-family='monospace' font-weight='700'>py</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/comment/comment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/runmode/runmode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#/">
+        <span class="brand-logo">py</span>
+        <span><strong>TIN314 Lab</strong><small>Python cho phân tích dữ liệu</small></span>
+      </a>
+      <nav class="nav" id="nav">
+        <a href="#/" data-route="home"><span class="ico">⌂</span>Tổng quan</a>
+        <a href="#/learn" data-route="learn"><span class="ico">▤</span>Bài giảng</a>
+        <a href="#/problems" data-route="problems"><span class="ico">⌨</span>Luyện code</a>
+        <a href="#/quiz" data-route="quiz"><span class="ico">?</span>Trắc nghiệm</a>
+        <a href="#/exam" data-route="exam"><span class="ico">⏱</span>Thi thử</a>
+        <a href="#/play" data-route="play"><span class="ico">▶</span>Sổ tay Python</a>
+        <a href="#/learn/exam-tips" data-route="tips"><span class="ico">★</span>Bí kíp thi</a>
+      </nav>
+      <div class="sidebar-foot">
+        <div class="py-status" id="py-status"><span class="dot"></span><span class="txt">Python…</span></div>
+        <button class="btn ghost small" id="theme-toggle" title="Đổi giao diện sáng/tối">◐ Giao diện</button>
+      </div>
+    </aside>
+    <div class="main-wrap">
+      <header class="topbar">
+        <button class="btn ghost small menu-btn" id="menu-btn" aria-label="Mở menu">☰</button>
+        <div class="crumbs" id="crumbs"></div>
+        <div class="top-stats" id="top-stats"></div>
+      </header>
+      <main id="view" class="view"><div class="loading">Đang tải nội dung…</div></main>
+    </div>
+  </div>
+  <div id="toast" class="toast" hidden></div>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
