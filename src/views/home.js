@@ -32,75 +32,109 @@ export function homeView(view) {
     return { key, name: t.name, total: ps.length, tried, ok, rate: tried ? ok / tried : 1 };
   }).filter((t) => t.tried > 0 && t.rate < 1).sort((a, b) => a.rate - b.rate).slice(0, 3);
 
+  const chapters = app.lessons.filter((l) => l.chapter != null);
+  const doneIn = (l) => l.units.filter((u) => d.units[u.id]).length;
+  const unitPct = app.units.length ? Math.round((unitsDone / app.units.length) * 100) : 0;
+  const curLesson = nu ? app.lessons.find((l) => l.id === nu.lesson) : null;
+  const meter = (label, val, max, text) => `<div class="meter">
+      <div class="meter-top"><span>${label}</span><b>${text ?? `${val}<span class="muted">/${max}</span>`}</b></div>
+      <div class="bar"><span style="width:${max ? Math.min(100, (val / max) * 100) : 0}%"></span></div></div>`;
+
   view.innerHTML = `
-  <div class="card hero">
-    <div class="ring" style="--p:${pct}"><div>${pct}%</div></div>
-    <div style="flex:1;min-width:0">
-      <h1>Chinh phục <b>TIN314</b></h1>
-      <p class="muted" style="margin:.2rem 0 .8rem">Lập trình cho phân tích dữ liệu và tính toán khoa học – Python chạy thật ngay trên trình duyệt,
-      chấm bài tự động giống CodeRunner. Thi cuối kỳ là <b>thi thực hành trên máy 90 phút (60% điểm)</b> – luyện code mỗi ngày là chìa khoá.</p>
+  <header class="dash-head">
+    <h1>Chinh phục <b>TIN314</b></h1>
+    <p class="muted">Học Python ngay trên trình duyệt, bài tập chấm tự động như CodeRunner. Thi cuối kỳ là <b>thi thực hành trên máy 90 phút (60% điểm)</b> – luyện code mỗi ngày là chìa khoá.</p>
+  </header>
+
+  <section class="dash-top">
+    <div class="card continue">
+      <span class="eyebrow">${unitsDone ? "Tiếp tục học" : "Bắt đầu từ đây"}</span>
+      ${nu ? `<h2>Bài ${unitNo(nu)} – ${esc(nu.title)}</h2>
+        <p class="muted">Chương ${nu.chapter}${curLesson ? ` · ${esc(curLesson.title)}` : ""}</p>
+        ${nu.goal ? `<p class="goal-line">${esc(nu.goal.replace(/[`*]/g, ""))}</p>` : ""}`
+        : `<h2>Bạn đã học hết các bài!</h2><p class="muted">Hãy luyện đề và thi thử để chắc tay hơn.</p>`}
       <div class="row">
-        ${nu ? `<a class="btn" href="#/learn/${nu.lesson}/${nu.id}">Học tiếp: Bài ${unitNo(nu)} – ${esc(nu.title)}</a>` : ""}
-        ${next ? `<a class="btn primary" href="#/p/${next.id}">Làm bài tiếp: ${esc(next.title)}</a>` : `<span class="badge solved">Đã giải hết tất cả bài!</span>`}
-        <a class="btn" href="#/exam">Thi thử</a>
+        ${nu ? `<a class="btn primary" href="#/learn/${nu.lesson}/${nu.id}">Học tiếp</a>` : ""}
+        ${next ? `<a class="btn" href="#/p/${next.id}">Làm bài code: ${esc(next.title)}</a>` : ""}
+        <a class="btn ghost" href="#/exam">Thi thử 90 phút</a>
       </div>
     </div>
-  </div>
-
-  <div class="grid cols-4" style="margin-top:16px">
-    <div class="card stat"><span class="num">${solved}<span class="muted small">/${total}</span></span><span class="lbl">Bài code đã giải</span></div>
-    <div class="card stat"><span class="num">${unitsDone}<span class="muted small">/${app.units.length}</span></span><span class="lbl">Bài học nhỏ đã xong</span></div>
-    <div class="card stat"><span class="num">${quizAvg === null ? "–" : quizAvg + "%"}</span><span class="lbl">Trắc nghiệm (TB điểm cao nhất)</span></div>
-    <div class="card stat"><span class="num">${lastExam ? lastExam.score.toFixed(2) : "–"}</span><span class="lbl">Thi thử gần nhất${bestExam !== null ? ` · cao nhất ${bestExam.toFixed(2)}` : ""}</span></div>
-  </div>
-
-  <h2>Bộ bài tập</h2>
-  <div class="grid cols-3 sets">
-    ${SETS.map((s) => {
-      const ps = app.problems.filter((p) => setOf(p) === s);
-      const ok = ps.filter((p) => d.solved[p.id]).length;
-      return `<a class="card chapter-card" href="#/problems?set=${s.short}">
-        <div class="row"><strong>${esc(s.name)}</strong><span class="spacer"></span><span class="muted small">${ok}/${ps.length}</span></div>
-        <span class="muted small">${esc(s.desc)}</span>
-        <div class="bar ok"><span style="width:${ps.length ? (ok / ps.length) * 100 : 0}%"></span></div>
-      </a>`;
-    }).join("")}
-  </div>
-
-  <div class="grid cols-2" style="margin-top:16px">
-    <div class="card">
-      <h3>Lộ trình 4 tuần gợi ý</h3>
-      <ul class="list-plain">
-        ${PLAN.map(([w, t, desc, href]) => `<li><a href="${href}"><b>${w} – ${t}</b></a><div class="muted small">${desc}</div></li>`).join("")}
-      </ul>
+    <div class="card overview">
+      <div class="ring" style="--p:${unitPct}"><div>${unitPct}%</div></div>
+      <div class="overview-list">
+        <b class="ov-t">Tiến độ của bạn</b>
+        ${meter("Bài học", unitsDone, app.units.length)}
+        ${meter("Bài code", solved, total)}
+        ${meter("Trắc nghiệm", quizAvg ?? 0, 100, quizAvg === null ? "chưa làm" : quizAvg + "%")}
+        ${meter("Thi thử cao nhất", bestExam ?? 0, 10, bestExam === null ? "chưa thi" : bestExam.toFixed(2) + "/10")}
+      </div>
     </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>Lộ trình học</h2><a class="small" href="#/learn">Xem tất cả →</a></div>
+    <div class="track">
+      ${chapters.map((l) => {
+        const dn = doneIn(l);
+        const cur = nu && nu.lesson === l.id;
+        const full = dn === l.units.length;
+        return `<a class="ch ${cur ? "cur" : ""} ${full ? "done" : ""}" href="#/learn/${l.id}">
+          <span class="ch-n">${full ? "✓" : l.chapter}</span>
+          <span class="ch-body"><b>${esc(l.title)}</b>
+            <span class="muted small">${cur ? "Đang học · " : ""}${dn}/${l.units.length} bài</span>
+            <span class="bar"><span style="width:${l.units.length ? (dn / l.units.length) * 100 : 0}%"></span></span></span>
+        </a>`;
+      }).join("")}
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>Luyện code theo bộ đề</h2><a class="small" href="#/problems">Tất cả ${total} bài →</a></div>
+    <div class="tiles">
+      ${SETS.map((s, k) => {
+        const ps = app.problems.filter((p) => setOf(p) === s);
+        const ok = ps.filter((p) => d.solved[p.id]).length;
+        return `<a class="tile c${k % 4}" href="#/problems?set=${s.short}">
+          <span class="tile-top"><b>${esc(s.name)}</b><span class="muted small">${ok}/${ps.length}</span></span>
+          <span class="muted small tile-desc">${esc(s.desc)}</span>
+          <span class="bar"><span style="width:${ps.length ? (ok / ps.length) * 100 : 0}%"></span></span>
+        </a>`;
+      }).join("")}
+    </div>
+  </section>
+
+  <section class="dash-cols">
     <div class="card">
-      <h3>Cấu trúc điểm học phần</h3>
-      <ul class="list-plain">
-        <li><b>10%</b> Chuyên cần – điểm danh, phát biểu</li>
-        <li><b>30%</b> Dự án nhóm – xác định vấn đề, code dễ hiểu, chạy đúng (xem Chương 8)</li>
-        <li><b>60%</b> Thi hết học phần – <b>thi thực hành trên máy 90 phút</b></li>
-      </ul>
       <h3>Cần luyện thêm</h3>
       ${weak.length ? `<ul class="list-plain">${weak.map((w) => `<li><a href="#/problems?topic=${w.key}">${esc(w.name)}</a>
           <span class="muted small"> – đúng ${w.ok}/${w.tried} bài đã thử</span></li>`).join("")}</ul>`
-        : `<p class="muted small">Chưa có dữ liệu – hãy làm vài bài để hệ thống gợi ý chủ đề yếu.</p>`}
+        : `<p class="muted">Chưa có dữ liệu – làm vài bài code để hệ thống gợi ý chủ đề còn yếu.</p>`}
+      ${d.exams.length ? `<h3>Lịch sử thi thử</h3><ul class="list-plain">${d.exams.slice(-4).reverse().map((e) => `<li class="row"><b>${e.score.toFixed(2)}/10</b>
+        <span class="muted small">${esc(e.title)} · ${fmtDate(e.at)}</span></li>`).join("")}</ul>` : ""}
     </div>
-  </div>
+    <div class="card">
+      <h3>Lộ trình 4 tuần gợi ý</h3>
+      <ol class="weeks">
+        ${PLAN.map(([w, t, desc, href]) => `<li><a href="${href}"><b>${w} – ${t}</b></a><div class="muted small">${desc}</div></li>`).join("")}
+      </ol>
+    </div>
+  </section>
 
-  ${d.exams.length ? `<div class="card" style="margin-top:16px"><h3>Lịch sử thi thử</h3>
-    <ul class="list-plain">${d.exams.slice(-6).reverse().map((e) => `<li class="row"><b>${e.score.toFixed(2)}/10</b>
-      <span class="muted small">${esc(e.title)} · ${fmtDate(e.at)}</span></li>`).join("")}</ul></div>` : ""}
+  <section class="score-pills">
+    <div><b>10%</b><span>Chuyên cần</span></div>
+    <div><b>30%</b><span>Dự án nhóm (Chương 8)</span></div>
+    <div class="hi"><b>60%</b><span>Thi thực hành trên máy, 90 phút</span></div>
+  </section>
 
-  <div class="card" style="margin-top:16px">
-    <h3>Dữ liệu tiến độ</h3>
+  <details class="card data-card">
+    <summary>Sao lưu tiến độ</summary>
     <p class="muted small">Tiến độ được lưu trong trình duyệt này. Xuất file để sao lưu hoặc chuyển sang máy khác.</p>
     <div class="row">
       <button class="btn small" id="exp">Xuất tiến độ</button>
       <label class="btn small">Nhập tiến độ<input type="file" id="imp" accept=".json" hidden></label>
       <button class="btn small danger" id="rst">Xoá toàn bộ tiến độ</button>
     </div>
-  </div>`;
+  </details>`;
 
   view.querySelector("#exp").onclick = () => {
     const blob = new Blob([store.exportJson()], { type: "application/json" });
