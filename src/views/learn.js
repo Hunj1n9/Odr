@@ -4,7 +4,7 @@ import { app, autoComplete, chapterOf, nextUnit, unitExercises, unitNo, unitProg
 import { store } from "../store.js";
 import { $, esc, levelBadge, md, renderMarkdownInto, setCrumbs, toast } from "../ui.js";
 
-const chapters = () => app.lessons.filter((l) => l.chapter);
+const chapters = () => app.lessons.filter((l) => l.chapter != null);
 const doneCount = (l) => l.units.filter((u) => store.data.units[u.id]).length;
 
 export function learnListView(view) {
@@ -56,7 +56,7 @@ export function lessonView(view, [id = "exam-tips"]) {
     view.innerHTML = `<div class="card">Không tìm thấy bài giảng.</div>`;
     return;
   }
-  setCrumbs([["Bài giảng", "#/learn"], [lesson.chapter ? `Chương ${lesson.chapter}` : lesson.title]]);
+  setCrumbs([["Bài giảng", "#/learn"], [lesson.chapter != null ? `Chương ${lesson.chapter}` : lesson.title]]);
   if (!lesson.units.length) {
     view.innerHTML = `<article class="lesson"><h1>${esc(lesson.title)}</h1><div class="body"></div></article>`;
     renderMarkdownInto($(".body", view), lesson.body, { runnable: true });

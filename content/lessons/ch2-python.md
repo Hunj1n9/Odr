@@ -2,6 +2,8 @@
 @chapter: 2
 @summary: Biến, số, chuỗi, if, vòng lặp, list/tuple/set/dict, hàm, comprehension, xử lý lỗi và các mẫu thuật toán hay thi.
 
+> **Mới học lập trình?** Hãy học **Chương 0 – Làm quen với lập trình** trước (9 bài ngắn, giải thích từ con số 0). Các bài dưới đây sẽ dễ hơn rất nhiều khi bạn đã quen biến, `print`, `if`, `for` và hàm.
+
 Đây là chương **quan trọng nhất cho bài thi**: đề giữa kỳ và phần lớn đề cuối kỳ là viết hàm Python thuần. Chương được chia thành 16 bài nhỏ – mỗi bài một khái niệm, học xong làm bài tập luôn. Đừng học dồn: **2–3 bài mỗi ngày** là đủ.
 
 > **Đối chiếu tài liệu FTU:** Buổi 2–4 (LEC 2 "Python cơ bản – thành phần cú pháp và kiểu dữ liệu", LEC 3; ghi chú Buổi 02–04): số và `round`, chuỗi + slicing + phương thức chuỗi, **datetime**, `input`, quy tắc đặt tên, if, module/package, list – dict – tuple – set, comprehension, `format()`. Phần I đề cuối kỳ (3 điểm) lấy từ chương này.

@@ -17,7 +17,7 @@ export const SETS = [
 ];
 
 export const setOf = (p) => SETS.find((s) => (s.match ? s.match(p) : s.key === p.file));
-export const chapterOf = (p) => (p.unit ? Number(p.unit.match(/^c(\d+)/)?.[1]) : null) || TOPICS[p.topic]?.chapter || 2;
+export const chapterOf = (p) => (p.unit ? Number(p.unit.match(/^c(\d+)/)?.[1]) : null) ?? TOPICS[p.topic]?.chapter ?? 2;
 
 // ---------- bài học nhỏ ----------
 const words = (t) => new Set((t || "").toLowerCase().match(/[\p{L}\p{N}_]{3,}/gu) || []);

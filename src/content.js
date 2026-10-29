@@ -8,11 +8,11 @@ export const PROBLEM_FILES = [
   "01-basics.md", "02-midterm.md", "03-collection.md", "04-numpy.md",
   "05-pandas.md", "06-viz.md", "07-ml.md", "08-ftu-exam.md",
   // bài tập nhỏ đi kèm từng bài học (@unit)
-  "u1-intro.md", "u2-python.md", "u3-io.md", "u4-pandas.md",
+  "u0-start.md", "u1-intro.md", "u2-python.md", "u3-io.md", "u4-pandas.md",
   "u5-viz.md", "u6-ml.md", "u7-eval.md", "u8-project.md",
 ];
 export const LESSON_FILES = [
-  "ch1-intro.md", "ch2-python.md", "ch3-io.md", "ch4-pandas.md",
+  "ch0-start.md", "ch1-intro.md", "ch2-python.md", "ch3-io.md", "ch4-pandas.md",
   "ch5-viz.md", "ch6-ml.md", "ch7-eval.md", "ch8-project.md", "exam-tips.md",
 ];
 
