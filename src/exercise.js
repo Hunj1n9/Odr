@@ -14,17 +14,17 @@ export function mountExercise(el, p, { label = "", onSolved } = {}) {
       ${levelBadge(p.level)}
       <span class="badge solved ex-ok" ${solved() ? "" : "hidden"}>✓ Đã giải</span>
       <span class="spacer"></span>
-      <a class="btn small ghost" href="#/p/${p.id}" title="Mở trong trang luyện code đầy đủ">⤢ Toàn màn hình</a>
+      <a class="btn small ghost" href="#/p/${p.id}" title="Mở trong trang luyện code đầy đủ">Toàn màn hình</a>
     </div>
     <div class="md ex-statement">${md(p.statement)}</div>
     <div class="editor"></div>
     <div class="editor-actions">
-      <button class="btn small" data-a="run">▶ Chạy thử</button>
+      <button class="btn small" data-a="run">Chạy thử</button>
       <button class="btn small primary" data-a="submit">✓ Nộp & chấm</button>
-      ${p.hints.length ? `<button class="btn small ghost" data-a="hint">💡 Gợi ý (0/${p.hints.length})</button>` : ""}
-      <button class="btn small ghost" data-a="sol">👀 Lời giải</button>
+      ${p.hints.length ? `<button class="btn small ghost" data-a="hint">Gợi ý (0/${p.hints.length})</button>` : ""}
+      <button class="btn small ghost" data-a="sol">Lời giải</button>
       <span class="spacer"></span>
-      <button class="btn small ghost" data-a="reset" title="Về code mẫu ban đầu">⟲</button>
+      <button class="btn small ghost" data-a="reset" title="Về code mẫu ban đầu">Làm lại</button>
     </div>
     <div class="ex-hints"></div>
     <div class="output ex-out" hidden></div>
@@ -76,11 +76,11 @@ export function mountExercise(el, p, { label = "", onSolved } = {}) {
     if (ok) {
       $(".ex-ok", el).hidden = false;
       if (first) {
-        toast("🎉 Chính xác!");
+        toast("Chính xác!");
         onSolved?.();
       }
     } else if (p.hints.length && shownHints === 0 && (store.data.attempts[p.id] || 0) >= 2) {
-      gradeEl.insertAdjacentHTML("beforeend", `<p class="muted small" style="margin-top:8px">Bí? Bấm <b>💡 Gợi ý</b> nhé.</p>`);
+      gradeEl.insertAdjacentHTML("beforeend", `<p class="muted small" style="margin-top:8px">Bí? Bấm <b>Gợi ý</b> nhé.</p>`);
     }
   };
 
@@ -92,7 +92,7 @@ export function mountExercise(el, p, { label = "", onSolved } = {}) {
       if (shownHints < p.hints.length) shownHints++;
       $(".ex-hints", el).innerHTML = p.hints.slice(0, shownHints).map((h, i) => `<div class="hint-item md"><b>Gợi ý ${i + 1}:</b> ${md(h)}</div>`).join("");
       highlightIn($(".ex-hints", el));
-      e.target.closest("button").textContent = `💡 Gợi ý (${shownHints}/${p.hints.length})`;
+      e.target.closest("button").textContent = `Gợi ý (${shownHints}/${p.hints.length})`;
     } else if (a === "sol") {
       const box = $(".ex-sol", el);
       if (!box.hidden) {

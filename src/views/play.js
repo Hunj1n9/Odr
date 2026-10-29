@@ -33,9 +33,9 @@ export function playView(view) {
       <h1 style="margin:0">Sổ tay Python</h1>
       <span class="muted small">Thực hành tự do như Jupyter Notebook – có sẵn NumPy, Pandas, Matplotlib, scikit-learn.</span>
       <span class="spacer"></span>
-      <button class="btn small" id="run-all">▶▶ Chạy tất cả</button>
-      <button class="btn small" id="restart" title="Xoá mọi biến đã tạo">⟲ Khởi động lại kernel</button>
-      <button class="btn small" id="download">⤓ Tải file .py</button>
+      <button class="btn small" id="run-all">Chạy tất cả</button>
+      <button class="btn small" id="restart" title="Xoá mọi biến đã tạo">Khởi động lại kernel</button>
+      <button class="btn small" id="download">Tải file .py</button>
       <button class="btn small ghost" id="reset-cells">Khôi phục ô mẫu</button>
     </div>
     <div class="grid" style="grid-template-columns:minmax(0,1fr) 300px;align-items:start" id="pl">
@@ -70,11 +70,11 @@ export function playView(view) {
     wrap.innerHTML = `<div class="nb-prompt">[ ]</div><div>
       <div class="editor"></div>
       <div class="nb-tools">
-        <button class="btn small primary run">▶</button>
+        <button class="btn small primary run">Chạy</button>
         <button class="btn small ghost up" title="Lên">↑</button>
         <button class="btn small ghost down" title="Xuống">↓</button>
         <button class="btn small ghost below" title="Thêm ô bên dưới">+</button>
-        <button class="btn small ghost del" title="Xoá ô">🗑</button>
+        <button class="btn small ghost del" title="Xoá ô">Xoá</button>
       </div>
       <div class="output"></div></div>`;
     const entry = { wrap, prompt: $(".nb-prompt", wrap), out: $(".output", wrap) };

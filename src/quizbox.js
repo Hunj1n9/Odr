@@ -28,7 +28,7 @@ export function mountQuiz(box, q0, { label = "", onAnswer } = {}) {
       const ex = box.querySelector(".quiz-explain");
       ex.hidden = false;
       ex.innerHTML = `<b>${ok ? "✓ Chính xác." : "✗ Chưa đúng."}</b> ${md(q.explain || "")}
-        ${ok ? "" : `<button class="btn small ghost retry">↻ Thử lại câu này</button>`}`;
+        ${ok ? "" : `<button class="btn small ghost retry">Thử lại câu này</button>`}`;
       highlightIn(ex);
       const retry = ex.querySelector(".retry");
       if (retry) retry.onclick = () => mountQuiz(box, q0, { label, onAnswer });

@@ -19,8 +19,8 @@ export function quizListView(view) {
     <h1>Trắc nghiệm kiến thức</h1>
     <p class="muted">${app.quizzes.length} câu hỏi, gồm câu kiểm tra nhanh của từng bài học và câu tổng hợp theo chương. Phần lớn là "đoán output của đoạn code" – kỹ năng đọc code giúp bạn tìm lỗi nhanh khi thi thực hành.</p>
     <div class="row" style="margin:14px 0">
-      <a class="btn primary" href="#/quiz/mix">🎲 Đề tổng hợp 30 câu ngẫu nhiên</a>
-      ${wrongCount ? `<a class="btn" href="#/quiz/wrong">↻ Ôn lại ${wrongCount} câu từng làm sai</a>` : ""}
+      <a class="btn primary" href="#/quiz/mix">Đề tổng hợp 30 câu ngẫu nhiên</a>
+      ${wrongCount ? `<a class="btn" href="#/quiz/wrong">Ôn lại ${wrongCount} câu từng làm sai</a>` : ""}
     </div>
     <div class="grid cols-3">
       ${chapters.map((c) => {
@@ -101,7 +101,7 @@ export function quizView(view, [key]) {
     store.touch();
     $("#summary", view).innerHTML = `<div class="card" style="text-align:center">
       <div class="score-big">${pct}%</div>
-      <p>Đúng ${correct}/${pool.length} câu. ${pct >= 80 ? "Rất tốt! 🎉" : "Ôn lại phần giải thích các câu sai rồi làm lại nhé."}</p>
+      <p>Đúng ${correct}/${pool.length} câu. ${pct >= 80 ? "Rất tốt!" : "Ôn lại phần giải thích các câu sai rồi làm lại nhé."}</p>
       <div class="row" style="justify-content:center">
         <a class="btn" href="#/quiz">Danh sách trắc nghiệm</a>
         <button class="btn primary" id="again">Làm lượt mới</button>

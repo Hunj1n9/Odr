@@ -36,13 +36,13 @@ export function homeView(view) {
   <div class="card hero">
     <div class="ring" style="--p:${pct}"><div>${pct}%</div></div>
     <div style="flex:1;min-width:0">
-      <h1>Chinh phục <b>TIN314</b> 🚀</h1>
+      <h1>Chinh phục <b>TIN314</b></h1>
       <p class="muted" style="margin:.2rem 0 .8rem">Lập trình cho phân tích dữ liệu và tính toán khoa học – Python chạy thật ngay trên trình duyệt,
       chấm bài tự động giống CodeRunner. Thi cuối kỳ là <b>thi thực hành trên máy 90 phút (60% điểm)</b> – luyện code mỗi ngày là chìa khoá.</p>
       <div class="row">
-        ${nu ? `<a class="btn" href="#/learn/${nu.lesson}/${nu.id}">▤ Học tiếp: Bài ${unitNo(nu)} – ${esc(nu.title)}</a>` : ""}
-        ${next ? `<a class="btn primary" href="#/p/${next.id}">⌨ Làm bài tiếp: ${esc(next.title)}</a>` : `<span class="badge solved">Đã giải hết tất cả bài!</span>`}
-        <a class="btn" href="#/exam">⏱ Thi thử</a>
+        ${nu ? `<a class="btn" href="#/learn/${nu.lesson}/${nu.id}">Học tiếp: Bài ${unitNo(nu)} – ${esc(nu.title)}</a>` : ""}
+        ${next ? `<a class="btn primary" href="#/p/${next.id}">Làm bài tiếp: ${esc(next.title)}</a>` : `<span class="badge solved">Đã giải hết tất cả bài!</span>`}
+        <a class="btn" href="#/exam">Thi thử</a>
       </div>
     </div>
   </div>
@@ -96,8 +96,8 @@ export function homeView(view) {
     <h3>Dữ liệu tiến độ</h3>
     <p class="muted small">Tiến độ được lưu trong trình duyệt này. Xuất file để sao lưu hoặc chuyển sang máy khác.</p>
     <div class="row">
-      <button class="btn small" id="exp">⤓ Xuất tiến độ</button>
-      <label class="btn small">⤒ Nhập tiến độ<input type="file" id="imp" accept=".json" hidden></label>
+      <button class="btn small" id="exp">Xuất tiến độ</button>
+      <label class="btn small">Nhập tiến độ<input type="file" id="imp" accept=".json" hidden></label>
       <button class="btn small danger" id="rst">Xoá toàn bộ tiến độ</button>
     </div>
   </div>`;

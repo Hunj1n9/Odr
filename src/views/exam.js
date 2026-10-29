@@ -141,7 +141,7 @@ function examRun(view) {
       <section>
         <div class="editor tall" id="editor"></div>
         <div class="editor-actions">
-          <button class="btn" id="run">▶ Chạy thử</button>
+          <button class="btn" id="run">Chạy thử</button>
           <button class="btn" id="check">✓ Kiểm tra với test mẫu</button>
           <span class="spacer"></span><span class="muted small">Code tự lưu – tải lại trang không mất bài.</span>
         </div>
@@ -195,7 +195,7 @@ function examRun(view) {
       tick = setInterval(update, 1000);
       return;
     }
-    view.innerHTML = `<div class="card"><h2>${auto ? "⏰ Hết giờ – đang tự động nộp bài" : "Đang chấm bài"}…</h2><p id="prog" class="muted"></p></div>`;
+    view.innerHTML = `<div class="card"><h2>${auto ? "Hết giờ – đang tự động nộp bài" : "Đang chấm bài"}…</h2><p id="prog" class="muted"></p></div>`;
     const items = [];
     for (const [i, p] of problems.entries()) {
       $("#prog", view).textContent = `Đang chấm câu ${i + 1}/${problems.length}…`;
@@ -244,7 +244,7 @@ function examReview(view) {
     <div class="card" style="text-align:center">
       <p class="muted">${esc(ex.title)}</p>
       <div class="score-big">${ex.score.toFixed(2)}<span class="muted" style="font-size:1.2rem">/10</span></div>
-      <p>${ex.score >= 8.5 ? "Xuất sắc – sẵn sàng đi thi! 🎉" : ex.score >= 7 ? "Khá tốt – ôn lại các câu sai để lên điểm A." : "Cần luyện thêm – xem lại từng câu bên dưới."}
+      <p>${ex.score >= 8.5 ? "Xuất sắc – sẵn sàng đi thi!" : ex.score >= 7 ? "Khá tốt – ôn lại các câu sai để lên điểm A." : "Cần luyện thêm – xem lại từng câu bên dưới."}
       <span class="muted small">Thời gian làm: ${mins} phút.</span></p>
       <div class="row" style="justify-content:center"><button class="btn primary" id="new">Làm đề mới</button></div>
     </div>

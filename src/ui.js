@@ -63,8 +63,8 @@ export function hydrateCells(root) {
     cell.removeAttribute("data-code");
     cell.innerHTML = `<div class="editor"></div>
       <div class="cell-bar">
-        <button class="btn small primary run">▶ Chạy</button>
-        <button class="btn small ghost reset" title="Khôi phục code gốc">⟲</button>
+        <button class="btn small primary run">Chạy</button>
+        <button class="btn small ghost reset" title="Khôi phục code gốc">Làm lại</button>
         <span class="muted small">Sửa code và chạy lại thoải mái · Ctrl+Enter</span>
       </div>
       <div class="output"></div>`;
@@ -116,8 +116,8 @@ export function createEditor(parent, { value = "", onRun, onSubmit, onChange, li
 
 // ---------------------------------------------------------------- chạy code
 function errorText(e) {
-  if (e.kind === "timeout") return "⏱ Quá thời gian chạy – có thể do vòng lặp vô hạn (while thiếu bước tăng?). Python đã được khởi động lại.";
-  if (e.kind === "stopped") return "■ Đã dừng chương trình. Python đang khởi động lại…";
+  if (e.kind === "timeout") return "Quá thời gian chạy – có thể do vòng lặp vô hạn (while thiếu bước tăng?). Python đã được khởi động lại.";
+  if (e.kind === "stopped") return "Đã dừng chương trình. Python đang khởi động lại…";
   return "Lỗi hệ thống: " + e.message;
 }
 
@@ -135,7 +135,7 @@ export function renderResult(out, res, stdout) {
 /** Chạy code và hiển thị vào phần tử out. Trả về kết quả (hoặc null nếu lỗi hệ thống). */
 export async function runInto(code, out, { fresh = true, stdin = "" } = {}) {
   let stdout = "";
-  out.innerHTML = `<div class="status">Đang chạy… <button class="btn small ghost stop">■ Dừng</button></div><pre class="live" hidden></pre>`;
+  out.innerHTML = `<div class="status">Đang chạy… <button class="btn small ghost stop">Dừng</button></div><pre class="live" hidden></pre>`;
   const status = $(".status", out);
   const live = $(".live", out);
   $(".stop", out).onclick = () => py.stop();

@@ -1,6 +1,6 @@
 import { TOPICS } from "../content.js";
 import { gradeProblem, renderGrade } from "../grade.js";
-import { app, status, unitNo } from "../state.js";
+import { app, chapterOf, relatedUnits, status, unitNo } from "../state.js";
 import { store } from "../store.js";
 import { $, $$, createEditor, esc, levelBadge, md, highlightIn, runInto, setCrumbs, toast } from "../ui.js";
 
@@ -18,13 +18,24 @@ export function problemView(view, [id]) {
   const saved = store.data.code[id];
   let shownHints = 0;
 
+  const related = relatedUnits(p);
+  const lesson = app.lessons.find((l) => l.chapter === chapterOf(p));
+  const lessonBox = related.length || lesson ? `
+      <div class="lesson-help">
+        <b>Chưa biết làm? Ôn lại bài học:</b>
+        <div class="row">
+          ${related.map((u) => `<a class="btn small" href="#/learn/${u.lesson}/${u.id}">Bài ${unitNo(u)}: ${esc(u.title)}</a>`).join("")}
+          ${lesson ? `<a class="btn small ghost" href="#/learn/${lesson.id}">Cả chương ${lesson.chapter} →</a>` : ""}
+        </div>
+      </div>` : "";
+
   view.innerHTML = `
   <div class="row" style="margin-bottom:12px">
     <h1 style="margin:0">${esc(p.title)}</h1>
     ${levelBadge(p.level)}<span class="badge">${esc(TOPICS[p.topic]?.name || p.topic)}</span>
     ${p.unit ? (() => {
       const u = app.units.find((x) => x.id === p.unit);
-      return u ? `<a class="badge accent" href="#/learn/${u.lesson}/${u.id}" title="Về bài học">📖 Bài ${unitNo(u)}: ${esc(u.title)}</a>` : "";
+      return u ? `<a class="badge accent" href="#/learn/${u.lesson}/${u.id}" title="Về bài học">Bài ${unitNo(u)}: ${esc(u.title)}</a>` : "";
     })() : `<span class="badge accent">${esc(p.source)}</span>`}
     <span class="badge solved" id="solved-badge" ${status(id) === "solved" ? "" : "hidden"}>✓ Đã giải</span>
     <span class="spacer"></span>
@@ -39,15 +50,16 @@ export function problemView(view, [id]) {
         <button data-t="solution">Lời giải</button>
       </div>
       <div id="lpane"></div>
+      ${lessonBox}
     </section>
     <section>
       <div class="editor tall" id="editor"></div>
       <div class="editor-actions">
-        <button class="btn" id="run">▶ Chạy thử <kbd>Ctrl+Enter</kbd></button>
+        <button class="btn" id="run">Chạy thử <kbd>Ctrl+Enter</kbd></button>
         <button class="btn primary" id="submit">✓ Nộp & chấm <kbd>Ctrl+S</kbd></button>
         <span class="spacer"></span>
         <span class="muted small" id="saved-note">${saved ? "Đã khôi phục code bạn làm dở" : ""}</span>
-        <button class="btn small ghost" id="reset" title="Xoá code và bắt đầu lại từ code mẫu">⟲ Làm lại</button>
+        <button class="btn small ghost" id="reset" title="Xoá code và bắt đầu lại từ code mẫu">Làm lại</button>
       </div>
       <div class="tabs" id="rtabs">
         <button data-t="grade" class="active">Kết quả chấm</button>
@@ -69,7 +81,7 @@ export function problemView(view, [id]) {
     } else if (t === "hints") {
       lpane.innerHTML = p.hints.slice(0, shownHints).map((h, i) => `<div class="hint-item md"><b>Gợi ý ${i + 1}:</b> ${md(h)}</div>`).join("") +
         (shownHints < p.hints.length
-          ? `<button class="btn small" id="more-hint">💡 Hiện gợi ý ${shownHints + 1}/${p.hints.length}</button>`
+          ? `<button class="btn small" id="more-hint">Hiện gợi ý ${shownHints + 1}/${p.hints.length}</button>`
           : `<p class="muted small">Đã hiện hết gợi ý.</p>`);
       highlightIn(lpane);
       const btn = $("#more-hint", lpane);
@@ -79,7 +91,7 @@ export function problemView(view, [id]) {
       if (!unlocked) {
         lpane.innerHTML = `<p>Lời giải giúp bạn học cách viết code chuẩn – nhưng <b>hãy tự thử ít nhất 1–2 lần</b> trước khi xem. Trong phòng thi bạn chỉ có chính mình!</p>
           <p class="muted small">Số lần đã nộp: ${store.data.attempts[id] || 0}</p>
-          <button class="btn" id="reveal">👀 Tôi đã cố gắng – xem lời giải</button>`;
+          <button class="btn" id="reveal">Tôi đã cố gắng – xem lời giải</button>`;
         $("#reveal", lpane).onclick = () => {
           store.update((d) => { d.revealed[id] = Date.now(); });
           showLeft("solution");
@@ -155,12 +167,12 @@ export function problemView(view, [id]) {
       $("#solved-badge", view).hidden = false;
       const nxt = app.problems.slice(idx + 1).find((q) => !store.data.solved[q.id]);
       gradeEl.insertAdjacentHTML("beforeend", `<div class="row" style="margin-top:12px">
-        ${firstSolve ? `<span>🎉 Giải đúng lần đầu sau ${store.data.attempts[id]} lần nộp!</span>` : ""}
+        ${firstSolve ? `<span>Giải đúng lần đầu sau ${store.data.attempts[id]} lần nộp!</span>` : ""}
         <span class="spacer"></span>
         <button class="btn small" id="see-sol">Xem lời giải mẫu để so sánh</button>
         ${nxt ? `<a class="btn primary small" href="#/p/${nxt.id}">Bài tiếp: ${esc(nxt.title)} →</a>` : ""}</div>`);
       $("#see-sol", gradeEl).onclick = () => showLeft("solution");
-      if (firstSolve) toast("🎉 Chính xác! Đã lưu vào tiến độ.");
+      if (firstSolve) toast("Chính xác! Đã lưu vào tiến độ.");
     } else if ((store.data.attempts[id] || 0) >= 2 && shownHints === 0 && p.hints.length) {
       gradeEl.insertAdjacentHTML("beforeend", `<p class="muted small" style="margin-top:10px">Bí? Thử xem tab <b>Gợi ý</b> nhé.</p>`);
     }

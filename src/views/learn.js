@@ -21,7 +21,7 @@ export function learnListView(view) {
         <b>Tiến độ: ${done}/${total} bài nhỏ</b>
         <div class="bar ok" style="margin-top:6px"><span style="width:${total ? (done / total) * 100 : 0}%"></span></div>
       </div>
-      ${nu ? `<a class="btn primary" href="#/learn/${nu.lesson}/${nu.id}">▶ Học tiếp: Bài ${unitNo(nu)} – ${esc(nu.title)}</a>` : `<span class="badge solved">Đã học hết tất cả bài!</span>`}
+      ${nu ? `<a class="btn primary" href="#/learn/${nu.lesson}/${nu.id}">Học tiếp: Bài ${unitNo(nu)} – ${esc(nu.title)}</a>` : `<span class="badge solved">Đã học hết tất cả bài!</span>`}
     </div>
     <div class="grid cols-2">
       ${chapters().map((l) => {
@@ -71,7 +71,7 @@ export function lessonView(view, [id = "exam-tips"]) {
     <h1>${esc(lesson.title)}</h1>
     <div class="body"></div>
     <div class="row" style="margin:16px 0">
-      <a class="btn primary" href="#/learn/${lesson.id}/${cont.id}">▶ ${doneCount(lesson) ? "Học tiếp" : "Bắt đầu"}: Bài ${unitNo(cont)}</a>
+      <a class="btn primary" href="#/learn/${lesson.id}/${cont.id}">${doneCount(lesson) ? "Học tiếp" : "Bắt đầu"}: Bài ${unitNo(cont)}</a>
       <span class="muted small">${doneCount(lesson)}/${lesson.units.length} bài đã xong</span>
     </div>
     <h2>Lộ trình chương</h2>
@@ -83,7 +83,7 @@ export function lessonView(view, [id = "exam-tips"]) {
             <span class="rm-no">${pr.done ? "✓" : unitNo(u)}</span>
             <span class="rm-body"><b>${esc(u.title)}</b>
               ${u.goal ? `<span class="muted small">${md(u.goal).replace(/^<p>|<\/p>\s*$/g, "")}</span>` : ""}
-              <span class="rm-meta">${pr.quizTotal ? `<span>? ${pr.quizOk}/${pr.quizTotal} câu hỏi</span>` : ""}${pr.exTotal ? `<span>⌨ ${pr.exOk}/${pr.exTotal} bài tập</span>` : ""}</span>
+              <span class="rm-meta">${pr.quizTotal ? `<span>? ${pr.quizOk}/${pr.quizTotal} câu hỏi</span>` : ""}${pr.exTotal ? `<span>${pr.exOk}/${pr.exTotal} bài tập</span>` : ""}</span>
             </span>
           </a></li>`;
       }).join("")}
@@ -91,7 +91,7 @@ export function lessonView(view, [id = "exam-tips"]) {
     <div class="card row" style="margin-top:20px">
       <span>Học xong cả chương?</span><span class="spacer"></span>
       ${nq ? `<a class="btn" href="#/quiz/${lesson.chapter}">? Trắc nghiệm chương (${nq} câu)</a>` : ""}
-      ${ps.length ? `<a class="btn" href="#/problems?ch=${lesson.chapter}">⌨ ${ps.length} bài luyện thêm</a>` : ""}
+      ${ps.length ? `<a class="btn" href="#/problems?ch=${lesson.chapter}">${ps.length} bài luyện thêm</a>` : ""}
     </div>
   </article>`;
   renderMarkdownInto($(".body", view), lesson.body, { runnable: true });
@@ -119,10 +119,10 @@ export function unitView(view, [lid, uid]) {
     </nav>
     <span class="chapter-num">CHƯƠNG ${lesson.chapter} · BÀI ${unitNo(u)}</span>
     <h1>${esc(u.title)}</h1>
-    ${u.goal ? `<div class="goal">🎯 <b>Sau bài này bạn sẽ:</b> ${md(u.goal).replace(/^<p>|<\/p>\s*$/g, "")}</div>` : ""}
-    ${u.ftu ? `<p class="muted small ftu-src">📚 <b>Theo tài liệu FTU:</b> ${md(u.ftu).replace(/^<p>|<\/p>\s*$/g, "")}</p>` : ""}
+    ${u.goal ? `<div class="goal"><b>Sau bài này bạn sẽ:</b> ${md(u.goal).replace(/^<p>|<\/p>\s*$/g, "")}</div>` : ""}
+    ${u.ftu ? `<p class="muted small ftu-src"><b>Theo tài liệu FTU:</b> ${md(u.ftu).replace(/^<p>|<\/p>\s*$/g, "")}</p>` : ""}
     <div class="body"></div>
-    ${exercises.length ? `<h2>✍ Thực hành ngay</h2>
+    ${exercises.length ? `<h2>Thực hành ngay</h2>
       <p class="muted small">Viết code vào ô bên dưới, bấm <b>Chạy thử</b> để xem kết quả, rồi <b>Nộp & chấm</b> để chạy cả test ẩn.</p>
       <div class="exercises"></div>` : ""}
     ${practice.length ? `<h3>Luyện thêm cùng chủ đề</h3>
@@ -151,7 +151,7 @@ export function unitView(view, [lid, uid]) {
         ${!pr.done && left.length ? `<br>Còn: ${left.join(", ")}.` : ""}</div>
       </div>
       ${pr.done ? "" : `<button class="btn ${left.length ? "" : "primary"}" id="mark">${left.length ? "Vẫn đánh dấu đã học" : "✓ Hoàn thành bài"}</button>`}
-      ${next ? `<a class="btn ${pr.done ? "primary" : "ghost"}" href="#/learn/${next.lesson}/${next.id}">Bài tiếp →</a>` : `<a class="btn" href="#/exam">⏱ Thi thử</a>`}
+      ${next ? `<a class="btn ${pr.done ? "primary" : "ghost"}" href="#/learn/${next.lesson}/${next.id}">Bài tiếp →</a>` : `<a class="btn" href="#/exam">Thi thử</a>`}
     </div>`;
     const mark = $("#mark", finish);
     if (mark) {
@@ -167,7 +167,7 @@ export function unitView(view, [lid, uid]) {
     view.querySelectorAll(".stepper a").forEach((a, k) => a.classList.toggle("done", !!store.data.units[lesson.units[k].id]));
   };
   const refresh = () => {
-    if (autoComplete(u)) toast("🎉 Hoàn thành bài " + unitNo(u) + "!");
+    if (autoComplete(u)) toast("Hoàn thành bài " + unitNo(u) + "!");
     drawFinish();
     refreshStepper();
   };

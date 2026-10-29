@@ -20,6 +20,21 @@ export const setOf = (p) => SETS.find((s) => (s.match ? s.match(p) : s.key === p
 export const chapterOf = (p) => (p.unit ? Number(p.unit.match(/^c(\d+)/)?.[1]) : null) || TOPICS[p.topic]?.chapter || 2;
 
 // ---------- bài học nhỏ ----------
+const words = (t) => new Set((t || "").toLowerCase().match(/[\p{L}\p{N}_]{3,}/gu) || []);
+
+// Bài học liên quan đến một bài luyện code: bài gắn trực tiếp, hoặc bài cùng chương có từ khoá trùng nhiều nhất.
+export function relatedUnits(p, limit = 3) {
+  const own = p.unit && app.units.find((u) => u.id === p.unit);
+  if (own) return [own];
+  const ch = chapterOf(p);
+  const pw = words(`${p.title} ${p.fn || ""} ${p.statement || ""}`);
+  return app.units.filter((u) => u.chapter === ch)
+    .map((u) => ({ u, score: [...words(`${u.title} ${u.goal || ""}`)].filter((w) => pw.has(w)).length }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map((x) => x.u);
+}
+
 export const unitExercises = (u) => app.problems.filter((p) => p.unit === u.id);
 export const unitNo = (u) => `${u.chapter}.${app.units.filter((x) => x.chapter === u.chapter).indexOf(u) + 1}`;
 

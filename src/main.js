@@ -62,7 +62,7 @@ function updateTopStats() {
   const solved = solvedCount();
   const streak = store.streak();
   $("#top-stats").innerHTML = `<span>✓ <b>${solved}</b>/${app.problems.length} bài</span>` +
-    `<span>🔥 <b>${streak}</b> ngày liên tiếp</span>`;
+    `<span><b>${streak}</b> ngày liên tiếp</span>`;
 }
 
 function initTheme() {

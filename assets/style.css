@@ -436,3 +436,7 @@ textarea { border-radius: 16px; }
 .qnav button.active { background: var(--ink); border-color: var(--ink); color: var(--bg); }
 .toast { border-radius: 999px; }
 .grid.sets > a.card > .row { padding-right: 38px; }
+
+.lesson-help { margin-top: 16px; padding: 14px 16px; border-radius: 18px; background: var(--accent-soft); }
+.lesson-help b { display: block; margin-bottom: 8px; font-size: .9rem; }
+.lesson-help .btn { white-space: normal; text-align: left; border-radius: 16px; }
