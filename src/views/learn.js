@@ -97,6 +97,46 @@ export function lessonView(view, [id = "exam-tips"]) {
   renderMarkdownInto($(".body", view), lesson.body, { runnable: true });
 }
 
+// Dựng phần đầu bài: dải "bài này làm gì" + khung "Bắt đầu từ đây" (mục tiêu, hiểu nhanh, từ mới).
+function buildStart(view, u, exCount) {
+  const body = $(".body", view);
+  const plain = body.querySelector("blockquote.plain");
+  const ps = plain ? [...plain.querySelectorAll("p")] : [];
+  const say = ps[0] ? ps[0].innerHTML.replace(/^\s*<strong>Nói đơn giản:<\/strong>\s*/, "") : "";
+  const termsHtml = ps[1] ? ps[1].innerHTML.replace(/^\s*<strong>Từ cần biết:<\/strong>\s*/, "") : "";
+  plain?.remove();
+  const terms = termsHtml ? termsHtml.split(" · ").map((t) => {
+    const i = t.indexOf(" = ");
+    return i < 0 ? `<div class="term"><span class="def wide">${t}</span></div>`
+      : `<div class="term"><span class="w">${t.slice(0, i).replace(/<\/?strong>/g, "")}</span><span class="def">${t.slice(i + 3)}</span></div>`;
+  }).join("") : "";
+  $("#start", view).innerHTML = `
+    <h2 class="start-h">Bắt đầu từ đây</h2>
+    ${u.goal ? `<div class="start-row"><span class="lbl">Mục tiêu</span><div>${md(u.goal).replace(/^<p>|<\/p>\s*$/g, "")}</div></div>` : ""}
+    ${say ? `<div class="start-row"><span class="lbl">Hiểu nhanh</span><div class="say">${say}</div></div>` : ""}
+    ${terms ? `<div class="start-row"><span class="lbl">Từ mới</span><div class="terms">${terms}</div></div>` : ""}`;
+  if (!say && !terms && !u.goal) $("#start", view).remove();
+
+  // nhãn cho từng loại nội dung để biết "đang cần làm gì"
+  const cells = [...body.querySelectorAll(".cell")];
+  cells.forEach((c) => c.insertAdjacentHTML("afterbegin", `<div class="cell-label"><span class="tag tag-try">Thử ngay</span>Bấm <b>Chạy</b>, rồi sửa vài chữ và chạy lại</div>`));
+  const quizzes = [...body.querySelectorAll(".quick-check")];
+  const steps = [
+    ["Đọc phần Bắt đầu từ đây", "#start"],
+    cells.length ? [`Thử code (${cells.length} ô)`, cells[0]] : null,
+    quizzes.length ? [`Trả lời (${quizzes.length} câu)`, quizzes[0]] : null,
+    exCount ? [`Tự làm (${exCount} bài)`, $("#ex-h", view)] : null,
+  ].filter(Boolean);
+  const path = $("#path", view);
+  path.innerHTML = `<span class="path-t">Bài này gồm:</span>` + steps.map(([t], k) => `<button type="button" class="path-s"><i>${k + 1}</i>${t}</button>`).join("");
+  path.querySelectorAll("button").forEach((b, k) => {
+    b.onclick = () => {
+      const target = typeof steps[k][1] === "string" ? $(steps[k][1], view) : steps[k][1];
+      target?.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+  });
+}
+
 export function unitView(view, [lid, uid]) {
   const lesson = app.lessons.find((l) => l.id === lid);
   const u = lesson?.units.find((x) => x.id === uid);
@@ -119,17 +159,18 @@ export function unitView(view, [lid, uid]) {
     </nav>
     <span class="chapter-num">CHƯƠNG ${lesson.chapter} · BÀI ${unitNo(u)}</span>
     <h1>${esc(u.title)}</h1>
-    ${u.goal ? `<div class="goal"><b>Sau bài này bạn sẽ:</b> ${md(u.goal).replace(/^<p>|<\/p>\s*$/g, "")}</div>` : ""}
-    ${u.ftu ? `<p class="muted small ftu-src"><b>Theo tài liệu FTU:</b> ${md(u.ftu).replace(/^<p>|<\/p>\s*$/g, "")}</p>` : ""}
+    <nav class="path" id="path" aria-label="Bài này gồm những gì"></nav>
+    <section class="start" id="start"></section>
     <div class="body"></div>
-    ${exercises.length ? `<h2>Thực hành ngay</h2>
-      <p class="muted small">Viết code vào ô bên dưới, bấm <b>Chạy thử</b> để xem kết quả, rồi <b>Nộp & chấm</b> để chạy cả test ẩn.</p>
+    ${exercises.length ? `<h2 class="step-h" id="ex-h"><span class="tag tag-do">Tự làm</span>Bài tập của bài này</h2>
+      <p class="muted">Viết code vào ô bên dưới, bấm <b>Chạy thử</b> để xem kết quả, rồi <b>Nộp & chấm</b> để hệ thống kiểm tra.</p>
       <div class="exercises"></div>` : ""}
     ${practice.length ? `<h3>Luyện thêm cùng chủ đề</h3>
       <div class="plist card" style="padding:0">${practice.map((p) => `<a class="prow" href="#/p/${p.id}">
         <span class="st ${store.data.solved[p.id] ? "ok" : ""}">${store.data.solved[p.id] ? "✓" : "○"}</span>
         <span><span class="t">${esc(p.title)}</span><div class="sub">${esc(p.source)}</div></span>
         <span class="meta">${levelBadge(p.level)}</span></a>`).join("")}</div>` : ""}
+    ${u.ftu ? `<details class="src"><summary>Nguồn tài liệu FTU</summary><p class="muted small">${md(u.ftu).replace(/^<p>|<\/p>\s*$/g, "")}</p></details>` : ""}
     <div class="card finish" id="finish"></div>
     <div class="row" style="margin-top:16px">
       ${prev ? `<a class="btn ghost" href="#/learn/${prev.lesson}/${prev.id}">← ${unitNo(prev)} ${esc(prev.title)}</a>` : ""}
@@ -177,8 +218,10 @@ export function unitView(view, [lid, uid]) {
   body.querySelectorAll(".quiz-slot").forEach((slot) => {
     const q = u.quizzes[Number(slot.dataset.qi)];
     slot.className = "card quick-check";
-    mountQuiz(slot, q, { label: "Kiểm tra nhanh:", onAnswer: refresh });
+    mountQuiz(slot, q, { label: "Câu hỏi nhanh:", onAnswer: refresh });
   });
+
+  buildStart(view, u, exercises.length);
 
   const cleanups = [];
   const exWrap = $(".exercises", view);

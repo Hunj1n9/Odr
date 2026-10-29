@@ -65,7 +65,7 @@ export function hydrateCells(root) {
       <div class="cell-bar">
         <button class="btn small primary run">Chạy</button>
         <button class="btn small ghost reset" title="Khôi phục code gốc">Làm lại</button>
-        <span class="muted small">Sửa code và chạy lại thoải mái · Ctrl+Enter</span>
+        <span class="muted small">Ctrl+Enter để chạy</span>
       </div>
       <div class="output"></div>`;
     const out = $(".output", cell);
