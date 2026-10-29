@@ -11,6 +11,11 @@ Bản tiếng Anh của đề cương gọi chương này là **Model Evaluation
 @goal: Giải thích vì sao không đánh giá trên dữ liệu huấn luyện, chia dữ liệu bằng `train_test_split` với `test_size` và `random_state`.
 @practice: ml06
 
+> **Nói đơn giản:** Nếu học sinh ôn đúng đề nào thì thi lại **chính đề đó**, điểm cao chỉ vì học thuộc. Muốn biết em có *hiểu thật* không, phải thi bằng **đề chưa từng thấy**. Với mô hình cũng vậy: ta **chia dữ liệu** làm *tập train* (để học) và *tập test* (để thi), và chỉ tin điểm trên tập test.
+>
+> **Từ cần biết:** **train** = phần dùng để học · **test** = phần giữ lại để kiểm tra · **`test_size=0.2`** = dành 20% làm test · **`random_state`** = số cố định để lần nào chia cũng giống nhau
+
+
 Đánh giá mô hình trên chính dữ liệu đã học giống **cho học sinh làm lại đúng đề đã chữa** – điểm cao chưa nói lên gì. Ta giữ lại một phần dữ liệu làm **tập kiểm tra (test)**:
 
 ```python
@@ -57,6 +62,11 @@ Mô hình có R² train = 0.95 nhưng R² test = 0.40. Điều này cho thấy:
 @ftu: Lecture 11 – đánh giá trên dữ liệu chưa dùng để huấn luyện; khoá IBM module 5
 @goal: Dùng `cross_val_score` để đánh giá ổn định hơn một lần chia, đọc trung bình và độ lệch chuẩn các fold, dùng `cross_val_predict`.
 @practice: ml10
+
+> **Nói đơn giản:** Chia train/test một lần có thể **may rủi** (tình cờ test dễ/khó). **Cross-validation** chia dữ liệu thành k phần, **luân phiên** mỗi phần làm "đề thi" một lần rồi lấy trung bình – giống thi thử k đề khác nhau thay vì chỉ một. Kết quả ổn định và đáng tin hơn.
+>
+> **Từ cần biết:** **fold** = một phần trong k phần · **`cross_val_score`** = điểm từng fold · **trung bình ± độ lệch chuẩn** = điểm chung và độ dao động
+
 
 Một lần chia train/test có thể "may" hoặc "rủi". **K-fold cross-validation** chia dữ liệu thành k phần; lần lượt mỗi phần làm test một lần, k − 1 phần còn lại làm train.
 
@@ -106,6 +116,11 @@ Với `cv=5`, mỗi dòng dữ liệu được dùng làm **test** bao nhiêu l�
 @ftu: Lecture 11 (câu 60) – overfitting; outline – overfit/underfit
 @goal: Nhận diện underfitting/overfitting qua điểm train–test, vẽ đường R² theo bậc đa thức và chọn bậc tốt nhất trên tập test.
 @practice: ml07
+
+> **Nói đơn giản:** **Dưới khớp (underfitting)** = mô hình quá đơn giản, *học chưa đủ*, điểm cả train lẫn test đều thấp. **Quá khớp (overfitting)** = mô hình *học vẹt* cả những nhiễu lặt vặt, điểm train rất cao nhưng test thấp. Cần chọn mức phức tạp **vừa đủ** – nơi điểm *test* cao nhất.
+>
+> **Từ cần biết:** **underfitting** = quá đơn giản · **overfitting** = học vẹt · **độ phức tạp** = ví dụ bậc đa thức · dấu hiệu quá khớp: điểm train ≫ điểm test
+
 
 - **Dưới khớp (underfitting):** mô hình quá đơn giản → kém cả train lẫn test.
 - **Quá khớp (overfitting):** mô hình quá phức tạp, học cả nhiễu → train rất tốt, test kém.
@@ -166,6 +181,11 @@ Mô hình có R² train = 0.30 và R² test = 0.28. Vấn đề có khả năng 
 @ftu: Khoá IBM module 5 – Ridge regression (Lecture 11 – tinh chỉnh mô hình)
 @goal: Hiểu ý tưởng điều chuẩn (regularization), huấn luyện `Ridge(alpha=...)`, quan sát ảnh hưởng của alpha tới hệ số và điểm test.
 
+> **Nói đơn giản:** Mô hình "học vẹt" thường có các hệ số **to bất thường**. **Ridge** thêm một khoản *phạt* cho hệ số lớn, buộc mô hình giữ các hệ số nhỏ gọn và bớt vẹt. **`alpha`** là *mức phạt*: alpha lớn → phạt nặng, mô hình đơn giản hơn; alpha = 0 → như hồi quy thường.
+>
+> **Từ cần biết:** **điều chuẩn (regularization)** = phạt để mô hình đỡ phức tạp · **`Ridge(alpha=…)`** = hồi quy có phạt · alpha lớn ⇒ hệ số co lại
+
+
 Khi có nhiều biến (đặc biệt sau `PolynomialFeatures`), hệ số có thể phình to → quá khớp. **Ridge** thêm "hình phạt" α·Σb² vào hàm mất mát:
 - α = 0 → giống hồi quy tuyến tính thường
 - α lớn → hệ số bị kéo về gần 0 → mô hình đơn giản hơn
@@ -216,6 +236,11 @@ Vì sao nên chuẩn hoá (StandardScaler) trước Ridge?
 @ftu: Khoá IBM module 5 – GridSearchCV (Lecture 11 – tinh chỉnh mô hình)
 @goal: Phân biệt tham số và siêu tham số, dùng `GridSearchCV` thử lưới giá trị với cross-validation, đọc `best_params_`, `best_score_` và dùng `best_estimator_`.
 @practice: ml11
+
+> **Nói đơn giản:** **Tham số** là thứ máy *tự học* (hệ số). **Siêu tham số** là *núm vặn do bạn chọn trước* (alpha, k, bậc đa thức). Thay vì đoán mò, **GridSearchCV** thử *mọi tổ hợp* núm vặn bạn liệt kê, chấm bằng cross-validation, rồi báo bộ nào tốt nhất.
+>
+> **Từ cần biết:** **siêu tham số** = giá trị bạn đặt trước khi học · **`param_grid`** = danh sách các giá trị muốn thử · **`best_params_`** = bộ tốt nhất · **`best_estimator_`** = mô hình tốt nhất đã huấn luyện
+
 
 - **Tham số**: mô hình tự học (hệ số b).
 - **Siêu tham số**: người đặt trước khi học (`alpha`, bậc đa thức, `n_neighbors`, `max_depth`…).
@@ -269,6 +294,11 @@ Lưới `{"poly__degree": [1, 2, 3], "ridge__alpha": [0.1, 1, 10, 100]}` với `
 @ftu: Outline Chương 4 & 6 – confusion matrix, accuracy, precision, recall, lỗi Type I/II
 @goal: Đọc ma trận nhầm lẫn, tính accuracy, precision, recall, F1 và chọn chỉ số phù hợp khi dữ liệu mất cân bằng.
 @practice: ml04, ml13, tt402
+
+> **Nói đơn giản:** Phân loại không dùng R² mà dùng bảng **ma trận nhầm lẫn**: đếm máy đoán đúng/sai ở từng nhóm. Từ đó có: **accuracy** (tỉ lệ đoán đúng chung), **precision** (*trong số máy báo "dương", bao nhiêu thật sự dương?*), **recall** (*trong số thật sự dương, máy bắt được bao nhiêu?*). Nếu 99% là "âm", đoán toàn "âm" vẫn đúng 99% – nên cần precision/recall chứ không chỉ accuracy.
+>
+> **Từ cần biết:** **TP/TN/FP/FN** = đoán đúng dương / đúng âm / báo nhầm dương / bỏ sót dương · **F1** = trung bình hài hoà precision & recall · **mất cân bằng** = một nhóm áp đảo
+
 
 ```python
 import pandas as pd
@@ -326,6 +356,11 @@ Sàng lọc bệnh nguy hiểm – bỏ sót người bệnh rất tốn kém. �
 @@@ c7-7 | Quy trình đánh giá đúng: tránh rò rỉ dữ liệu
 @ftu: Đáp án 20 câu thực hành FTU – so sánh hồi quy với dự đoán trung bình (baseline)
 @goal: Nhận ra rò rỉ dữ liệu (data leakage), luôn fit bộ tiền xử lý chỉ trên tập train (qua Pipeline), và viết một quy trình đánh giá hoàn chỉnh.
+
+> **Nói đơn giản:** **Rò rỉ dữ liệu** giống *lộ đề thi*: thông tin của tập test vô tình lọt vào lúc mô hình học, nên điểm đẹp một cách giả tạo. Ví dụ thường gặp: chuẩn hoá *toàn bộ* dữ liệu trước khi chia. Cách phòng: chia trước, **chỉ học (fit) bộ tiền xử lý trên tập train**, và dùng Pipeline để việc này tự động đúng.
+>
+> **Từ cần biết:** **data leakage** = thông tin tập test lọt vào lúc học · **`fit`** trên train, **`transform`** trên test · **Pipeline** = đảm bảo đúng thứ tự
+
 
 **Rò rỉ dữ liệu**: thông tin từ tập test "lọt" vào quá trình huấn luyện → điểm đẹp giả tạo. Ví dụ hay gặp:
 - Chuẩn hoá (`fit_transform`) trên **toàn bộ** dữ liệu rồi mới chia train/test.

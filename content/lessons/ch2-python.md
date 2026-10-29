@@ -13,6 +13,11 @@
 @goal: Gán biến, phân biệt `int` / `float`, dùng đúng 7 phép toán `+ - * / // % **`.
 @practice: b01, gk21, gk31
 
+> **Nói đơn giản:** Nhớ lại: **biến là chiếc hộp có nhãn** (bài 0.3). Bài này thêm hai phép chia mà đề thi rất thích. Hãy tưởng tượng chia **17 cái kẹo cho 5 bạn**: mỗi bạn được **3** cái (đó là `//`, phần nguyên) và **thừa 2** cái (đó là `%`, phần dư).
+>
+> **Từ cần biết:** **`int`** = số nguyên (3) · **`float`** = số có phần lẻ (3.4) · **`//`** = chia lấy phần nguyên · **`%`** = chia lấy dư · `**` = luỹ thừa (`2 ** 3` = 8)
+
+
 Biến là **cái tên gắn với một giá trị**. Gán bằng dấu `=`:
 
 ```python
@@ -79,6 +84,11 @@ Thứ tự ưu tiên giống toán: `**` → `* / // %` → `+ -`. Không chắc
 @goal: Chuyển đổi giữa `int`, `float`, `str`, `bool`; làm tròn đúng với `round`; hiểu vì sao `0.1 + 0.2 != 0.3`.
 @practice: b15, gk01
 
+> **Nói đơn giản:** Mỗi giá trị nằm trong một "loại hộp" (số nguyên, số thực, chữ, đúng/sai). **Chuyển kiểu** là đổi giá trị sang hộp loại khác. Chuyện `0.1 + 0.2` không đúng bằng `0.3` giống như 1/3 viết thập phân không bao giờ hết: máy tính lưu số lẻ bằng hệ nhị phân nên có sai số siêu nhỏ.
+>
+> **Từ cần biết:** **`bool`** = đúng/sai (`True`/`False`) · **`round(x, n)`** = làm tròn x đến n chữ số lẻ · **`int(7.9)`** = cắt bỏ phần lẻ (=7), *không* làm tròn
+
+
 ```python
 print(int("12") + 1)      # chuỗi → số nguyên
 print(float("3.5") * 2)   # chuỗi → số thực
@@ -128,6 +138,11 @@ Máy tính lưu số thực ở hệ nhị phân nên có sai số nhỏ. Vì v�
 @ftu: LEC 2–3 & ghi chú Buổi 02–04 – indexing & slicing `s[start:stop:step]`
 @goal: Truy cập ký tự bằng chỉ số dương/âm, cắt chuỗi `s[a:b:c]`, đảo chuỗi, dùng `len` và `in`.
 @practice: b02, b06
+
+> **Nói đơn giản:** Một chuỗi giống **một hàng ghế đánh số từ 0**: ký tự đầu là ghế số 0. Đánh số âm thì đếm **từ cuối lên**: `-1` là ghế cuối cùng. **Cắt lát** `s[a:b]` giống cắt một khúc bánh mì: lấy từ ghế `a` đến **ngay trước** ghế `b`.
+>
+> **Từ cần biết:** **chỉ số (index)** = số thứ tự của một ký tự · **cắt lát (slicing)** = lấy một đoạn · **`len(s)`** = đếm số ký tự · **`s[::-1]`** = đọc chuỗi ngược từ cuối về đầu
+
 
 Chuỗi (`str`) là dãy ký tự, **đánh số từ 0**. Chỉ số âm đếm từ cuối:
 
@@ -183,6 +198,11 @@ Cách nào kiểm tra chuỗi `s` là **đối xứng** (palindrome)?
 @goal: Dùng `lower/upper/strip/split/join/replace/count/find`, định dạng số bằng f-string.
 @practice: b07, b20, gk27
 
+> **Nói đơn giản:** **Phương thức** là chức năng "gắn liền" với chuỗi, gọi bằng dấu chấm: `ten.upper()` nghĩa là "chuỗi `ten` ơi, hãy tự đổi sang chữ hoa". `split` cắt một câu thành các từ, `join` ghép các từ lại thành câu – giống tách và ghép các toa tàu.
+>
+> **Từ cần biết:** **`strip()`** = bỏ khoảng trắng hai đầu · **`split()`** = cắt chuỗi thành list · **`join()`** = ghép list thành chuỗi · **`replace(a, b)`** = thay a bằng b · **f-string** = câu có chỗ trống `{}` (xem bài 0.5)
+
+
 ```python
 s = "  Foreign Trade University  "
 t = s.strip()                 # bỏ khoảng trắng 2 đầu
@@ -236,6 +256,11 @@ print(f"|{ten:>8}|{ten:<8}|{ten:^8}|")   # căn phải / trái / giữa
 @@@ c2-16 | Ngày giờ (datetime) và định dạng chuỗi với format()
 @ftu: LEC 2–3 & ghi chú Buổi 02–04 – kiểu datetime, `strptime` với `%m/%d/%Y %I:%M:%S %p`, hàm `format()`
 @goal: Tạo và đọc ngày giờ bằng `datetime`, chuyển chuỗi ↔ ngày với `strptime`/`strftime`, tính khoảng cách bằng `timedelta`; định dạng chuỗi với `str.format()` và ký tự đặc biệt `\n`, `\t`.
+
+> **Nói đơn giản:** Ngày giờ **không phải chữ cũng không phải số thường** mà là một kiểu riêng, nên máy mới tính được "cách nhau bao nhiêu ngày". Hai lệnh dễ nhầm: **`strptime`** đọc chữ thành ngày (p = *parse*, phân tích), **`strftime`** viết ngày thành chữ (f = *format*, định dạng). Chuỗi như `%d/%m/%Y` là "khuôn" mô tả ngày viết thế nào.
+>
+> **Từ cần biết:** **`datetime`** = kiểu ngày giờ · **`timedelta`** = một khoảng thời gian (ví dụ 5 ngày) · **`%d`** ngày, **`%m`** tháng, **`%Y`** năm 4 chữ số
+
 
 Bài này bám theo LEC 2–3 của FTU (Buổi 02): *kiểu datetime, chuyển chuỗi thành datetime, hàm format()*.
 
@@ -311,6 +336,11 @@ print("Lan".swapcase(), "nguyễn văn an".title(), "ftu data".capitalize())
 @goal: Viết điều kiện nhiều nhánh, dùng so sánh và `and / or / not`, tránh lỗi thứ tự nhánh.
 @practice: b03, b19, gk04
 
+> **Nói đơn giản:** `if / elif / else` là **ngã rẽ**: máy kiểm tra các điều kiện **từ trên xuống**, gặp điều kiện đúng đầu tiên thì đi nhánh đó và **bỏ qua phần còn lại**. Vì vậy thứ tự các nhánh quan trọng – xếp điều kiện hẹp (như `>= 9`) lên trước điều kiện rộng (như `>= 5`).
+>
+> **Từ cần biết:** **`and`** = cả hai cùng đúng · **`or`** = ít nhất một cái đúng · **`not`** = đảo ngược đúng/sai · **`elif`** = "nếu không thì nếu…"
+
+
 ```python
 def xep_loai(diem):
     if diem >= 8.5:
@@ -377,6 +407,11 @@ Lỗi phổ biến: viết `if x = 5:` thay vì:
 @ftu: Đề cương ôn tập Phần I – vòng lặp for; bộ câu hỏi giữa kỳ Lecture 3–6 câu 1–2
 @goal: Duyệt chuỗi/list bằng `for`, sinh dãy số bằng `range(start, stop, step)`, dùng biến tích luỹ và `enumerate`.
 @practice: b04, gk05, b10
+
+> **Nói đơn giản:** Vòng `for` giống **đi dọc dãy nhà và gõ cửa từng nhà**: mỗi lượt bạn làm việc với một phần tử trong dãy. `range(start, stop, step)` là cách tạo dãy số để đi: bắt đầu từ `start`, dừng **trước** `stop`, mỗi bước nhảy `step`.
+>
+> **Từ cần biết:** **duyệt** = đi qua từng phần tử · **biến tích luỹ** = biến cộng dồn kết quả như heo đất (bài 0.7) · **`enumerate`** = vừa lấy số thứ tự vừa lấy phần tử
+
 
 ```python
 for i in range(5):          # 0 1 2 3 4
@@ -451,6 +486,11 @@ for c in "FTU":
 @goal: Dùng `while` khi không biết trước số lần lặp, thoát sớm bằng `break`, bỏ qua bằng `continue`, tránh lặp vô hạn.
 @practice: gk12, gk15
 
+> **Nói đơn giản:** `for` dùng khi bạn **biết trước** phải lặp bao nhiêu lần. `while` dùng khi **không biết trước**: "*chừng nào* còn đói thì còn ăn". Nguy hiểm duy nhất: nếu điều kiện **không bao giờ sai** thì máy lặp mãi không dừng (lặp vô hạn) – luôn nhớ có bước làm điều kiện dần thay đổi.
+>
+> **Từ cần biết:** **`break`** = dừng hẳn vòng lặp · **`continue`** = bỏ qua lượt này, sang lượt kế · **lặp vô hạn** = vòng lặp không bao giờ kết thúc
+
+
 ```python
 # Gửi 10 triệu, lãi 7%/năm: sau bao nhiêu năm vượt 20 triệu?
 tien, nam = 10.0, 0
@@ -523,6 +563,11 @@ for i in range(5):
 @ftu: Ghi chú Buổi 04 – list: append, insert, index, count, sort vs sorted, reverse, pop, remove, extend
 @goal: Tạo, truy cập, thêm/xoá phần tử list; dùng `len/sum/max/min`; phân biệt `sort()` và `sorted()`.
 @practice: b09, gk03, gk22
+
+> **Nói đơn giản:** List là **danh sách mua sắm**: có thứ tự, đánh số từ 0, thêm bớt sửa thoải mái. `append` ghi thêm món vào cuối danh sách. Điểm hay nhầm: `sort()` **sắp xếp ngay trên danh sách gốc**, còn `sorted()` **tạo một danh sách mới** đã sắp xếp và giữ nguyên bản gốc.
+>
+> **Từ cần biết:** **phần tử** = một mục trong list · **`append(x)`** = thêm x vào cuối · **`len`, `sum`, `max`, `min`** = đếm, cộng, lớn nhất, nhỏ nhất
+
 
 ```python
 diem = [7.5, 9, 6, 8.5]
@@ -598,6 +643,11 @@ print(goc, copy)
 @goal: Dùng tuple để trả về nhiều giá trị/đóng gói dữ liệu bất biến; dùng set để loại trùng và tìm giao/hợp/hiệu.
 @practice: gk23, gk24
 
+> **Nói đơn giản:** **Tuple** giống danh sách bị **khoá chặt**: tạo xong không sửa được (hợp để giữ một cặp như toạ độ `(x, y)`). **Set** giống **một túi bi không có thứ tự và không có hai viên giống nhau** – rất tiện để loại trùng. Giao/hợp/hiệu của set chính là biểu đồ Venn quen thuộc ở môn toán.
+>
+> **Từ cần biết:** **bất biến** = không sửa được sau khi tạo · **giao `&`** = phần chung · **hợp `|`** = gộp lại · **hiệu `-`** = có ở A nhưng không ở B
+
+
 ### Tuple – list "đóng băng"
 
 ```python
@@ -658,6 +708,11 @@ So sánh nhanh 4 cấu trúc: **list** `[ ]` có thứ tự, sửa được, cho
 @goal: Tạo và tra cứu dict, thêm/sửa khoá, duyệt `items()`, dùng `get` và mẫu đếm tần suất.
 @practice: b08, b11, gk34
 
+> **Nói đơn giản:** Dict là **cuốn danh bạ**: bạn tra theo **tên** (gọi là *khoá*) để ra **số điện thoại** (gọi là *giá trị*), chứ không tra theo số thứ tự. Dùng `.get(khoá)` an toàn hơn `[khoá]` vì nếu không tìm thấy nó không báo lỗi. Mẫu "đếm tần suất" (mỗi từ xuất hiện mấy lần) là bài thi rất hay gặp.
+>
+> **Từ cần biết:** **khoá (key)** = nhãn để tra cứu · **giá trị (value)** = nội dung ứng với khoá · **`items()`** = duyệt từng cặp (khoá, giá trị)
+
+
 ```python
 sv = {"ten": "Lan", "lop": "K62", "diem": 8.5}
 print(sv["ten"], sv.get("tuoi"), sv.get("tuoi", 0))
@@ -717,6 +772,11 @@ Duyệt dict `d` lấy cả khoá và giá trị:
 @ftu: Đề cương ôn tập Phần I – "thực hành viết hàm def"; Buổi 03 – tự viết module
 @goal: Viết hàm có tham số mặc định, gọi bằng tên tham số, hiểu biến cục bộ và hàm trả về `None`.
 @practice: b14, b15
+
+> **Nói đơn giản:** Đây là phần nâng cấp của bài 0.8. **Tham số mặc định** là giá trị dự phòng: nếu người gọi không đưa gì thì dùng giá trị đó. **Biến cục bộ** là biến chỉ "sống" trong hàm, như đồ trong phòng riêng – ra ngoài thì không thấy. Hàm không có `return` sẽ trả về `None` (nghĩa là "không có gì").
+>
+> **Từ cần biết:** **tham số mặc định** = `def f(x, n=2)` (nếu bỏ qua n thì n=2) · **phạm vi biến** = biến dùng được ở đâu · **`None`** = giá trị "trống"
+
 
 ```python
 def diem_hp(cc, gk, ck, w=(0.1, 0.3, 0.6)):
@@ -793,6 +853,11 @@ Trong `def f(*so):`, gọi `f(1, 2, 3)` thì `so` là:
 @goal: Viết list/dict comprehension có điều kiện, dùng `lambda` làm `key` cho `sorted/max/min`.
 @practice: gk33, gk32, b12
 
+> **Nói đơn giản:** **List comprehension** là cách viết gọn một vòng `for` thành một dòng. Cách đọc: `[x * 2 for x in ds if x > 0]` = "với mỗi `x` trong `ds`, **nếu** `x > 0`, lấy `x * 2`". **`lambda`** là hàm không có tên, viết trên một dòng, thường dùng để chỉ cho máy biết **sắp xếp theo tiêu chí nào**.
+>
+> **Từ cần biết:** **comprehension** = viết gọn tạo list/dict · **`lambda x: ...`** = hàm tí hon một dòng · **`key=`** = tiêu chí để sắp xếp/so sánh
+
+
 Comprehension = cách viết gọn của mẫu "tạo list rỗng → for → append":
 
 ```python
@@ -846,6 +911,11 @@ Sắp xếp list dict `ds` theo `"tuoi"` **giảm dần**, hoà thì theo `"ten"
 @ftu: Bộ câu hỏi giữa kỳ Lecture 3–6 – "ngoại lệ"; tự luận "tìm và sửa lỗi"
 @goal: Bắt lỗi bằng `try/except` đúng loại, dùng `else/finally`, chủ động `raise` khi dữ liệu sai.
 @practice: b14, tt105
+
+> **Nói đơn giản:** `try / except` giống **tấm lưới của người đi xiếc**: bạn *thử* làm việc nguy hiểm; nếu bị "rơi" (xảy ra lỗi) thì rơi vào lưới thay vì làm cả chương trình sập. Bạn quyết định làm gì khi rơi. `raise` ngược lại: *chủ động* báo lỗi khi thấy dữ liệu sai.
+>
+> **Từ cần biết:** **`try`** = thử làm · **`except`** = nếu lỗi thì làm việc này · **`finally`** = luôn làm dù có lỗi hay không · **`raise`** = tự báo lỗi
+
 
 ```python
 def chia_an_toan(a, b):
@@ -916,6 +986,11 @@ Nên bắt lỗi như thế nào?
 @ftu: Đề giữa kỳ TIN314 (34 câu CodeRunner) và "Tuyển tập 30 bài"
 @goal: Nhận ra và viết nhanh 5 mẫu: đếm có điều kiện, tìm max/min có tiêu chí, kiểm tra số nguyên tố, duyệt cặp/bộ ba, min-so-far.
 @practice: gk02, gk09, gk10, gk16
+
+> **Nói đơn giản:** Đề thi lặp lại vài **"công thức quen"** – giống vài món cơ bản mà đầu bếp nào cũng thuộc. Học thuộc *khung* của từng mẫu: **đếm có điều kiện** = biến đếm bắt đầu 0, gặp phần tử thoả điều kiện thì `+1`; **tìm lớn nhất** = giữ một biến "kỷ lục" và cập nhật khi gặp số lớn hơn.
+>
+> **Từ cần biết:** **biến đếm** = biến tăng thêm 1 mỗi lần thoả điều kiện · **số nguyên tố** = chỉ chia hết cho 1 và chính nó · **min-so-far** = giá trị nhỏ nhất đã gặp tới giờ
+
 
 Đề giữa kỳ cho thấy phần lớn câu hỏi là các **mẫu lặp đi lặp lại**. Thuộc 5 mẫu này là làm được đa số câu dễ–trung bình.
 
@@ -994,6 +1069,11 @@ Giá cổ phiếu `[9, 2, 6, 1, 4]`. Lợi nhuận lớn nhất mua 1 lần, bá
 @ftu: Đề cuối kỳ mẫu Phần I (câu 1–10), đề 5/1/2024 câu 1–5
 @goal: Làm nhanh nhóm câu Phần I (3 điểm) của đề cuối kỳ thật: nhập từ bàn phím bằng `input()`, cắt chuỗi, kiểm tra list, list comprehension có điều kiện và viết hàm.
 @practice: fe01, fe02, fe03, fe04, fe05, fe06
+
+> **Nói đơn giản:** Đây là dạng đề **"thi thật"**. Điều dễ vấp nhất: `input()` **luôn trả về chữ**, kể cả khi người dùng gõ số – nên phải đổi bằng `int(...)` hoặc `float(...)` trước khi tính toán. Hãy đọc kỹ đề rồi chia nhỏ thành các bước, làm từng bước như trong Chương 0.
+>
+> **Từ cần biết:** **`input()`** = nhận chữ người dùng gõ vào · **chuỗi → số** = `int(input())` · **tách dữ liệu** = `.split()` để cắt dòng thành các phần
+
 
 Các đề cuối kỳ TIN314 (đề mẫu, đề 5/1/2024) mở đầu bằng khoảng 10 câu Python cơ bản, mỗi câu vài dòng code. Ví dụ dạng câu: *"nhập diện tích và giá nhà từ bàn phím, tính giá trên m²"*, *"lấy chữ FTU và chữ Data từ chuỗi"*, *"kiểm tra số chẵn/lẻ bằng if–elif–else"*, *"tạo list 50→150 bằng list comprehension rồi kiểm tra sự tồn tại của 60 và 12"*.
 

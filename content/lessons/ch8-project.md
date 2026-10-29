@@ -10,6 +10,11 @@
 @ftu: Đề cương QLĐT – tiêu chí "xác định vấn đề rõ ràng, hợp lý, khả thi"
 @goal: Viết câu hỏi phân tích rõ ràng, đo được và khả thi với dữ liệu có sẵn; chia thành 3–5 câu hỏi con.
 
+> **Nói đơn giản:** Dự án tốt bắt đầu từ **câu hỏi tốt**. Câu hỏi tốt thì *rõ* (ai hiểu cũng hiểu như nhau), *đo được* (có con số để trả lời) và *khả thi* (dữ liệu bạn có đủ để trả lời). "Bán hàng thế nào?" quá mơ hồ; "Doanh thu tháng nào cao nhất và sản phẩm nào đóng góp nhiều nhất?" thì làm được.
+>
+> **Từ cần biết:** **câu hỏi phân tích** = câu dữ liệu có thể trả lời · **câu hỏi con** = chia câu lớn thành 3–5 câu nhỏ · **khả thi** = có đủ dữ liệu
+
+
 Câu hỏi tốt **cụ thể – đo được – có dữ liệu để trả lời**:
 
 | Kém | Tốt |
@@ -60,6 +65,11 @@ Một cột bị thiếu 85% giá trị. Cách xử lý hợp lý nhất khi l�
 @@@ c8-2 | Làm sạch dữ liệu có kiểm chứng
 @ftu: Đáp án 20 câu thực hành FTU câu 2 – làm sạch rồi `to_csv` file sạch; tiêu chí "chạy đúng"
 @goal: Gom toàn bộ bước làm sạch vào một hàm có thể chạy lại, ghi lại quyết định và kiểm tra kết quả bằng `assert`.
+
+> **Nói đơn giản:** Làm sạch dữ liệu bằng từng lệnh rời rạc sẽ khó làm lại. Hãy **gói mọi bước vào một hàm** để chạy lại bất cứ lúc nào, và ghi lại *vì sao* bạn làm vậy. **`assert`** là *người kiểm tra tự động*: nếu điều bạn khẳng định sai, chương trình dừng và báo ngay.
+>
+> **Từ cần biết:** **`assert đk, "thông báo"`** = khẳng định đk phải đúng, nếu sai thì báo lỗi · **hàm làm sạch** = một hàm nhận bảng thô, trả bảng sạch
+
 
 Đừng làm sạch rải rác ở nhiều ô notebook. Viết **một hàm** – chạy lại từ đầu bất cứ lúc nào, ra cùng kết quả (tiêu chí "chạy đúng"):
 
@@ -115,6 +125,11 @@ Trong báo cáo, phần làm sạch nên ghi:
 @ftu: Báo cáo nhóm TIN314 ML144 (bất động sản, chuyến bay, khách hàng) – cấu trúc EDA
 @goal: Mỗi câu hỏi con có một bảng/biểu đồ và **một câu nhận xét**; dùng hàm để tạo các bảng tổng hợp lặp lại.
 
+> **Nói đơn giản:** Khám phá có chủ đích nghĩa là **mỗi câu hỏi con có đúng một bảng hoặc biểu đồ, kèm một câu nhận xét**. Đừng vẽ thật nhiều biểu đồ rồi để người đọc tự đoán; hãy nói cho họ *thấy gì* và *điều đó nghĩa là gì*.
+>
+> **Từ cần biết:** **nhận xét** = một câu nêu phát hiện từ biểu đồ/bảng · **bảng tổng hợp** = thường làm bằng `groupby` hoặc `pivot_table`
+
+
 EDA trong dự án không phải "vẽ thật nhiều" – mỗi biểu đồ trả lời **một** câu hỏi con và kèm **một câu kết luận**.
 
 ```python
@@ -169,6 +184,11 @@ Viết hàm `tong_hop(df, nhom)` thay vì copy-paste code groupby cho từng c�
 @@@ c8-4 | Mô hình và diễn giải cho người không chuyên
 @ftu: Đáp án 20 câu thực hành FTU câu 4–5, 10 – diễn giải hệ số, so sánh sai số
 @goal: So sánh vài mô hình trên tập kiểm tra trong một bảng, chọn mô hình hợp lý và diễn giải hệ số/sai số bằng ngôn ngữ kinh doanh.
+
+> **Nói đơn giản:** Người nghe thường **không chuyên** nên đừng nói "hệ số là 2.3". Hãy dịch thành lời kinh doanh: *"mỗi phòng ngủ thêm làm giá nhà tăng khoảng 2,3 triệu, khi các yếu tố khác giữ nguyên"*. So sánh vài mô hình trong **một bảng** rồi chọn cái vừa chính xác vừa dễ giải thích.
+>
+> **Từ cần biết:** **diễn giải** = dịch con số thành ý nghĩa thực tế · **bảng so sánh mô hình** = mỗi dòng một mô hình + điểm trên tập test
+
 
 ```python
 import numpy as np
@@ -229,6 +249,11 @@ Hạn chế nào **nên** nêu trong báo cáo?
 @@@ c8-5 | Code dễ hiểu và trình bày dự án
 @ftu: Đề cương QLĐT – tiêu chí "chương trình viết dễ hiểu"; Buổi 15 – trình bày dự án
 @goal: Tổ chức notebook theo cấu trúc chuẩn, đặt tên – comment – tách hàm đúng cách, chuẩn bị báo cáo và thuyết trình theo tiêu chí chấm.
+
+> **Nói đơn giản:** Code của bạn sẽ được người khác (và chính bạn sau này) đọc. Code dễ hiểu có **tên rõ ràng** (`doanh_thu_thang` thay vì `x`), **chú thích nêu lý do** (không chỉ lặp lại code làm gì), và **tách việc lớn thành các hàm nhỏ**. Notebook nên đi theo trình tự: đặt vấn đề → làm sạch → khám phá → mô hình → kết luận.
+>
+> **Từ cần biết:** **comment** = ghi chú `#` giải thích ý định · **tách hàm** = mỗi hàm làm một việc · **cấu trúc notebook** = các mục có tiêu đề theo trình tự phân tích
+
 
 ### Cấu trúc notebook / báo cáo gợi ý
 

@@ -12,6 +12,11 @@ Các file có sẵn để thực hành: `sales.csv`, `customers.csv`, `students.
 @ftu: Buổi 5 "Ứng dụng Python vào phân tích dữ liệu" – dữ liệu là gì, cấu trúc, thang đo; đề cương ôn tập – "phân loại biến (định tính và định lượng)"
 @goal: Phân biệt dữ liệu có cấu trúc / phi cấu trúc / bán cấu trúc, 4 thang đo (định danh, thứ tự, khoảng, tỷ lệ), biến định tính và định lượng – để chọn đúng cách xử lý và biểu đồ.
 
+> **Nói đơn giản:** Bài này **chưa có code**, chỉ là từ vựng nền. Dữ liệu "gọn trong bảng" (như Excel) gọi là *có cấu trúc*; ảnh, video, văn bản tự do là *phi cấu trúc*. Các **thang đo** cho biết bạn được phép làm phép tính gì: tên thành phố chỉ để *phân loại*; xếp hạng 1-2-3 có *thứ tự* nhưng khoảng cách không đều; cân nặng thì *tính tỉ lệ* được (nặng gấp đôi nghĩa là thật sự gấp đôi).
+>
+> **Từ cần biết:** **định tính** = mô tả bằng chữ/nhãn (màu, giới tính) · **định lượng** = đo bằng số (tuổi, lương) · **định danh** = chỉ để phân biệt · **thứ tự** = xếp hạng được · **khoảng/tỷ lệ** = có thể trừ/chia
+
+
 Một **quan sát** (datum) là một dòng; nhiều quan sát tạo thành **dữ liệu** (data); tập hợp dữ liệu đồng nhất là **bộ dữ liệu** (dataset).
 
 ### Theo cấu trúc
@@ -83,6 +88,11 @@ Mã số sinh viên `20230145` nên được coi là biến gì?
 @goal: Mở file bằng `with open(...)`, đọc toàn bộ/từng dòng, ghi file với `"w"` và `"a"`, chỉ định `encoding="utf-8"`.
 @practice: pd01
 
+> **Nói đơn giản:** File trên ổ đĩa giống **một cuốn sổ**. `open(...)` là mở sổ; `with` đảm bảo **tự đóng sổ** khi xong việc. Chế độ `"r"` = chỉ đọc, `"w"` = **xoá hết rồi viết mới** (cẩn thận!), `"a"` = viết **nối thêm** vào cuối. Luôn thêm `encoding="utf-8"` để chữ tiếng Việt không bị hỏng.
+>
+> **Từ cần biết:** **đường dẫn** = địa chỉ của file · **`"r"` / `"w"` / `"a"`** = đọc / ghi đè / ghi thêm · **`encoding`** = bảng mã ký tự (utf-8 hiển thị được tiếng Việt)
+
+
 ```python
 # Ghi file: "w" = ghi mới (xoá nội dung cũ)
 with open("ghi_chu.txt", "w", encoding="utf-8") as f:
@@ -142,6 +152,11 @@ Vì sao nên dùng `with open(...) as f:` thay vì `f = open(...)`?
 @goal: Hiểu cấu trúc file CSV và JSON, đọc bằng module `csv` và `json`, chuyển đổi giữa chuỗi JSON và dict/list.
 @practice: pd02
 
+> **Nói đơn giản:** **CSV** chỉ là một bảng viết thành chữ, mỗi dòng một hàng, các cột cách nhau bằng dấu phẩy. **JSON** là dữ liệu viết dạng `"nhãn": giá trị` và có thể lồng nhau – nhìn rất giống dict của Python. Thư viện `csv` và `json` giúp đọc hai loại này.
+>
+> **Từ cần biết:** **CSV** = bảng ngăn cột bằng dấu phẩy · **JSON** = dữ liệu dạng nhãn–giá trị lồng nhau · **`json.loads`** = chuỗi JSON → dict/list
+
+
 **CSV** (comma-separated values) = bảng dạng văn bản: mỗi dòng là một bản ghi, các cột cách nhau bằng dấu phẩy, dòng đầu thường là tên cột.
 
 ```python
@@ -197,6 +212,11 @@ Hàm nào chuyển **dict → chuỗi JSON**?
 @ftu: Buổi 5 / ghi chú Buổi 05 – `read_csv`, `header=None`, gán `df.columns`; slide Buổi 6–7 – dữ liệu thiếu dạng "?"
 @goal: Dùng `pd.read_csv` với `sep`, `header`, `names`, `index_col`, `usecols`, `na_values`, `nrows` để đọc đúng dữ liệu "bẩn".
 @practice: pd01, pd02
+
+> **Nói đơn giản:** `pd.read_csv` đọc cả file CSV thành một **bảng** (DataFrame) chỉ bằng một lệnh. Dữ liệu ngoài đời thường "bẩn" (dùng dấu `;` thay dấu phẩy, không có dòng tiêu đề, ghi `N/A` cho ô thiếu…) nên hàm có nhiều **tuỳ chọn** để bảo máy đọc cho đúng. Mỗi tuỳ chọn giống một công tắc chỉnh cách đọc.
+>
+> **Từ cần biết:** **`sep`** = ký tự ngăn cột · **`header`** = dòng nào là tiêu đề · **`na_values`** = chuỗi nào coi là ô thiếu · **`usecols`** = chỉ đọc vài cột · **`nrows`** = chỉ đọc N dòng đầu
+
 
 ```python
 import pandas as pd
@@ -279,6 +299,11 @@ Chỉ đọc 2 cột `name` và `final` từ `students.csv`:
 @goal: Dùng `head/tail/shape/columns/dtypes/info/describe/value_counts` để "làm quen" một bộ dữ liệu trong 1 phút.
 @practice: pd03
 
+> **Nói đơn giản:** Mở một bộ dữ liệu lạ giống **lật nhanh một cuốn sách**: xem vài dòng đầu (`head`), biết nó dày bao nhiêu (`shape`), mỗi cột chứa loại gì (`dtypes`), và thống kê nhanh (`describe`). Làm xong 1 phút này bạn đã biết mình đang cầm cái gì.
+>
+> **Từ cần biết:** **`head()`** = 5 dòng đầu · **`shape`** = (số dòng, số cột) · **`dtypes`** = kiểu từng cột · **`describe()`** = thống kê tóm tắt · **`value_counts()`** = đếm mỗi giá trị xuất hiện mấy lần
+
+
 Đọc xong, **luôn** chạy bộ lệnh kiểm tra sau trước khi phân tích:
 
 ```python
@@ -333,6 +358,11 @@ Lệnh nào cho biết **mỗi hãng xe xuất hiện bao nhiêu lần**?
 @@@ c3-5 | Ghi dữ liệu và đọc từ cơ sở dữ liệu
 @ftu: Buổi 5 – `to_csv`, `read_html`, DBMS & quy trình SQL API (kết nối → gửi lệnh → nhận phản hồi → ngắt kết nối)
 @goal: Lưu DataFrame ra CSV/JSON, biết cách đọc Excel, và truy vấn cơ sở dữ liệu SQL bằng `sqlite3` + `pd.read_sql`.
+
+> **Nói đơn giản:** Lưu bảng ra file dùng `to_csv`. **Cơ sở dữ liệu** là một "kho" gồm nhiều bảng, và ta hỏi kho bằng **SQL** – một ngôn ngữ đặt câu hỏi gần như tiếng Anh: `SELECT cột FROM bảng WHERE điều kiện` = "lấy cột này từ bảng kia, chỉ những dòng thoả điều kiện".
+>
+> **Từ cần biết:** **SQL** = ngôn ngữ truy vấn kho dữ liệu · **`SELECT`** = chọn cột · **`FROM`** = lấy từ bảng nào · **`WHERE`** = điều kiện lọc · **`sqlite3`** = cơ sở dữ liệu nhỏ nằm trong một file
+
 
 ```python
 import pandas as pd
@@ -396,6 +426,11 @@ Thứ tự đúng khi làm việc với CSDL theo DB-API:
 @goal: Tạo mảng từ list, bằng `arange/linspace/zeros/ones`, đọc `ndim/shape/size/dtype`, đổi hình dạng bằng `reshape`.
 @practice: np01
 
+> **Nói đơn giản:** **Mảng NumPy** giống một *hàng (hoặc lưới) ô chứa số cùng kiểu*, được tối ưu để tính cực nhanh. `shape` cho biết lưới có bao nhiêu hàng, cột; `reshape` là xếp lại **cùng những số ấy** thành lưới hình dạng khác – giống xếp lại 12 viên gạch thành 3×4 hoặc 2×6.
+>
+> **Từ cần biết:** **`ndim`** = số chiều · **`shape`** = kích thước mỗi chiều · **`arange(a, b, s)`** = dãy số bước s · **`zeros`/`ones`** = mảng toàn 0/toàn 1
+
+
 NumPy cung cấp `ndarray` – mảng **cùng kiểu dữ liệu**, tính toán nhanh hơn list hàng chục lần. Pandas được xây trên NumPy.
 
 ```python
@@ -445,6 +480,11 @@ print(np.array([1, 2.5, 3]).dtype) # trộn int và float → float
 @ftu: Ghi chú Buổi 06 – tính tổng theo chiều dọc/ngang (`axis`)
 @goal: Thực hiện phép toán trên cả mảng không cần vòng lặp, dùng `sum/mean/std/min/max/argmax` theo `axis`.
 @practice: np01, np04, np06
+
+> **Nói đơn giản:** **Vector hoá** nghĩa là ra lệnh *một lần cho cả mảng*: `gia * 2` nhân đôi **mọi** phần tử, khỏi viết vòng `for`. Với bảng nhiều hàng cột, `axis` cho biết tính theo hướng nào: `axis=0` là *đi xuống* (mỗi cột một kết quả), `axis=1` là *đi ngang* (mỗi hàng một kết quả).
+>
+> **Từ cần biết:** **vector hoá** = phép tính áp dụng cho cả mảng · **`mean`** = trung bình · **`std`** = độ phân tán (lệch chuẩn) · **`argmax`** = vị trí của giá trị lớn nhất
+
 
 **Vector hoá**: phép toán áp dụng cho từng phần tử, không cần `for`:
 
@@ -505,6 +545,11 @@ Mẹo nhớ: `axis=0` **gộp các dòng lại** → còn một giá trị cho m
 @ftu: Ghi chú Buổi 06 – chọn dữ liệu; đề cương – loc/iloc
 @goal: Truy cập phần tử mảng 2 chiều `m[i, j]`, cắt lát dòng/cột, lọc bằng mặt nạ boolean và `np.where`.
 @practice: np02, np03
+
+> **Nói đơn giản:** Với bảng hai chiều, `m[i, j]` là **ô ở hàng i, cột j** (đếm từ 0). **Mặt nạ boolean** là một bảng đúng/sai cùng kích thước, đặt lên dữ liệu để **chỉ giữ ô nào là True** – giống tấm bìa khoét lỗ. `np.where` là phiên bản "nếu… thì… không thì…" cho cả mảng.
+>
+> **Từ cần biết:** **cắt lát** `m[1:3, :]` = hàng 1–2, mọi cột · **mặt nạ** `m[m > 5]` = chỉ lấy ô lớn hơn 5 · **`np.where(đk, a, b)`** = chọn a nếu đúng, b nếu sai
+
 
 ```python
 import numpy as np

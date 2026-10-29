@@ -13,6 +13,11 @@ Mẹo: sau mỗi lệnh hãy xem lại kết quả (`df.head()`), đừng viết
 @goal: Tạo Series có chỉ số, truy cập theo nhãn, tính toán vector hoá và dùng các hàm thống kê của Series.
 @practice: pd13
 
+> **Nói đơn giản:** **Series** là *một cột* của bảng Excel, nhưng mỗi ô còn có **nhãn** (gọi là chỉ số) để tra cứu. Phép toán trên Series tác động lên cả cột cùng lúc, giống kéo công thức xuống toàn cột trong Excel.
+>
+> **Từ cần biết:** **Series** = một cột có nhãn · **`index`** = nhãn các hàng · **thống kê** = `mean()`, `max()`, `sum()` … tính trên cả cột
+
+
 `Series` = mảng NumPy + **nhãn** (index) cho từng phần tử. Mỗi cột của DataFrame là một Series.
 
 ```python
@@ -60,6 +65,11 @@ Phép nào trả về Series các giá trị **lớn hơn 4**?
 @ftu: Slide Buổi 6–7 – thuộc tính DataFrame (dtypes, columns, axes, ndim, size, shape, values); đề cương – drop, add, rename column
 @goal: Tạo DataFrame từ dict, chọn một/nhiều cột, thêm cột tính toán, đổi tên và xoá cột.
 @practice: pd04
+
+> **Nói đơn giản:** **DataFrame** là *cả tờ bảng tính*, gồm nhiều cột (Series) cùng chung nhãn hàng. Chọn **một cột** viết `df["ten"]`; chọn **nhiều cột** phải viết **hai cặp ngoặc** `df[["ten", "tuoi"]]` (ngoặc ngoài là cú pháp chọn, ngoặc trong là một list tên cột). Thêm cột mới chỉ cần gán: `df["moi"] = ...`.
+>
+> **Từ cần biết:** **DataFrame** = bảng dữ liệu · **cột** = một đặc điểm (tuổi, lương) · **dòng** = một đối tượng (một người) · **`drop`** = xoá cột/dòng
+
 
 ```python
 import pandas as pd
@@ -127,6 +137,11 @@ Thêm cột `thanh_tien = so_luong × don_gia` đúng cách là:
 @goal: Dùng `loc` (theo nhãn) và `iloc` (theo vị trí) để lấy dòng, cột, ô; đặt cột làm chỉ số với `set_index`.
 @practice: pd15
 
+> **Nói đơn giản:** Có hai cách "chỉ tay" vào bảng: **`loc`** tìm theo **tên (nhãn)**, giống tìm nhà theo *tên chủ nhà*; **`iloc`** tìm theo **vị trí**, giống đếm *nhà thứ mấy* trong dãy. Chữ **i** trong `iloc` là *integer* (số nguyên) để dễ nhớ.
+>
+> **Từ cần biết:** **`loc[hàng, cột]`** = theo nhãn (cuối khoảng được **bao gồm**) · **`iloc[hàng, cột]`** = theo vị trí số (cuối khoảng **không** bao gồm) · **`set_index`** = chọn cột làm nhãn hàng
+
+
 ```python
 import pandas as pd
 df = pd.read_csv("students.csv", index_col="student_id")
@@ -178,6 +193,11 @@ Sửa cột `final` thành 10 cho các dòng có `final > 10`:
 @goal: Lọc với một hoặc nhiều điều kiện (`& | ~`), dùng `isin`, `between`, `str.contains` và `query`.
 @practice: pd05
 
+> **Nói đơn giản:** Lọc dòng là nói với bảng: *"chỉ giữ những dòng thoả điều kiện này"*. Điều kiện cho ra một cột đúng/sai, bảng sẽ giữ dòng nào là `True`. Ghép nhiều điều kiện thì dùng `&` (và), `|` (hoặc), `~` (không) và **bắt buộc đặt mỗi điều kiện trong ngoặc tròn**.
+>
+> **Từ cần biết:** **`df[df["tuoi"] > 18]`** = giữ người trên 18 tuổi · **`isin([...])`** = giá trị nằm trong danh sách · **`between(a, b)`** = nằm trong khoảng · **`str.contains`** = chứa đoạn chữ
+
+
 ```python
 import pandas as pd
 df = pd.read_csv("sales.csv")
@@ -218,6 +238,11 @@ Vì sao `df[df.a > 1 & df.b < 5]` báo lỗi?
 @goal: Sắp xếp theo một/nhiều cột, lấy N dòng lớn nhất/nhỏ nhất, xếp hạng và đặt lại chỉ số.
 @practice: pd07
 
+> **Nói đơn giản:** Sắp xếp bảng giống **xếp hạng thi đua**. `sort_values` xếp theo cột bạn chọn; `nlargest(3, "cot")` lấy ngay 3 dòng cao nhất ("top 3"). Sau khi sắp xếp, nhãn hàng bị xáo trộn – dùng `reset_index` để đánh số lại từ 0.
+>
+> **Từ cần biết:** **`ascending=False`** = xếp giảm dần · **`nlargest` / `nsmallest`** = top lớn nhất / nhỏ nhất · **`rank`** = thứ hạng của từng giá trị · **`reset_index`** = đánh số lại hàng
+
+
 ```python
 import pandas as pd
 df = pd.read_csv("students.csv").dropna(subset=["final"])
@@ -256,6 +281,11 @@ Sắp xếp theo `class` tăng dần, trong cùng lớp theo `final` giảm dầ
 @ftu: Slide Buổi 6–7 – xử lý dữ liệu thiếu (dropna, replace bằng trung bình/tần suất); đề thi HK I 2024–2025 câu 2
 @goal: Phát hiện ô thiếu, chọn giữa xoá (`dropna`) và điền (`fillna` bằng trung bình/trung vị/mode), loại dòng trùng.
 @practice: pd03, pd04
+
+> **Nói đơn giản:** Dữ liệu thật hay có **ô trống** (hiện là `NaN`) và **dòng lặp**. Bạn có hai lựa chọn với ô trống: **bỏ** dòng đó (`dropna`) hoặc **điền** giá trị hợp lý (`fillna`) – ví dụ điền trung bình của cột. Nhiều ô thiếu thì bỏ; ít thì điền, để không mất thông tin.
+>
+> **Từ cần biết:** **`NaN`** = ô thiếu · **`isna()`** = ô nào thiếu · **trung vị** = giá trị ở giữa khi xếp thứ tự (ít bị lệch bởi số quá lớn) · **mode** = giá trị xuất hiện nhiều nhất · **`drop_duplicates`** = bỏ dòng trùng
+
 
 ```python
 import pandas as pd
@@ -326,6 +356,11 @@ Cột phân loại `region` có ô thiếu, điền bằng gì là hợp lý nh�
 @goal: Sửa kiểu dữ liệu sai (`astype`, `to_numeric`), đổi đơn vị, chuẩn hoá cột số bằng 3 cách: chia max, min-max, z-score.
 @practice: tt312, np04
 
+> **Nói đơn giản:** Thường một cột số bị đọc nhầm thành chữ (vd `"1,200"`), phải **ép về số** (`astype`, `to_numeric`). **Chuẩn hoá** là đưa các cột về *cùng một thang* để so sánh công bằng: tuổi chạy 0–100 còn lương chạy hàng triệu, nếu không chuẩn hoá thì lương "lấn át" tuổi.
+>
+> **Từ cần biết:** **`astype`** = đổi kiểu cột · **min-max** = đưa về khoảng 0–1 · **z-score** = đo mỗi giá trị cách trung bình bao nhiêu độ lệch chuẩn
+
+
 ### Định dạng dữ liệu
 
 ```python
@@ -389,6 +424,11 @@ Sau chuẩn hoá z-score, **trung bình** cột xấp xỉ:
 @goal: Chia biến số thành các nhóm bằng `pd.cut`/`pd.qcut`, biến cột phân loại thành biến giả 0/1 với `get_dummies`.
 @practice: pd11
 
+> **Nói đơn giản:** **Binning** là chia số thành **các thùng/nhóm**: tuổi 7, 15, 40, 70 → *thiếu nhi / thanh niên / trung niên / cao tuổi*. **Biến giả** (`get_dummies`) đổi một cột chữ thành nhiều cột 0/1, vì mô hình chỉ hiểu số: cột "thành phố" gồm Hà Nội/Huế → hai cột *là_Hà_Nội*, *là_Huế*.
+>
+> **Từ cần biết:** **`pd.cut`** = chia theo khoảng giá trị bạn đặt · **`pd.qcut`** = chia sao cho mỗi nhóm có số dòng gần bằng nhau · **`get_dummies`** = tạo cột 0/1 cho mỗi nhãn
+
+
 ### Binning – chia khoảng
 
 Đôi khi "giá thấp / trung bình / cao" có ý nghĩa hơn con số chính xác:
@@ -447,6 +487,11 @@ Vì sao phải biến cột chữ thành biến giả trước khi đưa vào `L
 @goal: Áp dụng hàm cho từng giá trị/dòng, ánh xạ bằng dict, xử lý chuỗi hàng loạt với `.str` và ngày tháng với `.dt`.
 @practice: pd10, pd11
 
+> **Nói đơn giản:** Khi có sẵn hàm bạn muốn làm cho **mỗi ô**, `apply` giao việc đó cho cả cột. `map` tra theo một **bảng đổi** (ví dụ "Nam" → 1, "Nữ" → 0). `.str` và `.dt` là "hộp công cụ" để xử lý chữ hàng loạt và ngày tháng hàng loạt (như `df["ten"].str.upper()`).
+>
+> **Từ cần biết:** **`apply`** = áp hàm cho từng giá trị/dòng · **`map`** = đổi giá trị theo dict · **`.str.…`** = hàm chuỗi cho cả cột · **`.dt.…`** = hàm ngày tháng cho cả cột
+
+
 ```python
 import pandas as pd
 df = pd.read_csv("students.csv").dropna(subset=["final"])
@@ -498,6 +543,11 @@ Lấy tháng từ cột ngày `df["date"]` (đã là datetime):
 @ftu: Slide Buổi 6–7 / Lecture 7 – groupby; bộ câu hỏi giữa kỳ câu 29
 @goal: Dùng mẫu **split–apply–combine**: `groupby` một/nhiều cột, tổng hợp bằng `sum/mean/count/size` và `agg` nhiều hàm.
 @practice: pd06, pd12, pd16
+
+> **Nói đơn giản:** `groupby` làm theo ba bước, như **chấm điểm theo lớp**: (1) *tách* học sinh thành từng lớp, (2) *tính* điểm trung bình mỗi lớp, (3) *gộp* kết quả thành một bảng mới. Mẫu này tên là **split–apply–combine** và dùng ở khắp mọi nơi.
+>
+> **Từ cần biết:** **`groupby("lop")`** = tách theo cột lop · **`agg`** = tính nhiều thống kê cùng lúc · **`size`** = đếm số dòng mỗi nhóm · **`count`** = đếm số ô có dữ liệu
+
 
 ```python
 import pandas as pd
@@ -552,6 +602,11 @@ Lấy kết quả groupby thành DataFrame có cột `region` bình thường (k
 @goal: Tạo bảng hai chiều bằng `pivot_table` và `crosstab`, điền ô trống, thêm tổng hàng/cột.
 @practice: pd08
 
+> **Nói đơn giản:** **Pivot table** giống PivotTable trong Excel: biến dữ liệu dài thành **bảng hai chiều** (hàng là một đặc điểm, cột là đặc điểm khác, ô là con số tổng hợp). **Crosstab** là bảng *đếm chéo*, vd có bao nhiêu nam/nữ ở mỗi lớp.
+>
+> **Từ cần biết:** **`pivot_table`** = bảng tổng hợp hai chiều · **`values`** = số cần tính · **`aggfunc`** = tính gì (tổng, trung bình…) · **`margins`** = thêm hàng/cột tổng
+
+
 ```python
 import pandas as pd
 df = pd.read_csv("sales.csv").drop_duplicates().dropna()
@@ -598,6 +653,11 @@ print(cars.groupby(["drive_wheels", "body_style"])["price"].mean().unstack().rou
 @ftu: Outline – tổ chức và tái cấu trúc dữ liệu
 @goal: Ghép hai bảng theo khoá chung với `merge` (inner/left/right/outer) và nối bảng chồng lên nhau với `concat`.
 @practice: pd09, pd16
+
+> **Nói đơn giản:** **`merge`** ghép hai bảng **theo cột chung**, giống hàm VLOOKUP của Excel (ví dụ ghép bảng đơn hàng với bảng khách hàng qua mã khách). **`concat`** thì chỉ **xếp bảng này chồng lên bảng kia** (cùng loại cột). Bốn kiểu `how` quyết định xử lý khi dòng không có đôi.
+>
+> **Từ cần biết:** **khoá (key)** = cột chung dùng để ghép · **`inner`** = chỉ giữ dòng có ở cả hai · **`left`** = giữ hết bảng trái · **`outer`** = giữ tất cả · **`concat`** = nối chồng
+
 
 ```python
 import pandas as pd
@@ -654,6 +714,11 @@ Hai bảng có cột khoá tên khác nhau (`ma` và `ma_sv`). Dùng tham số n
 @ftu: Đề thi HK I 2024–2025 câu 2–3; Final hè 2025 (thresh, interpolate, duplicated, keep="last")
 @goal: Giải trọn các câu làm sạch trong đề cuối kỳ thật: bỏ dòng/cột thiếu theo tỉ lệ (`thresh`), bỏ dòng thiếu nhiều nhất, nội suy, các biến thể `drop_duplicates`/`duplicated`.
 @practice: fe08, fe09, fe10, fe11
+
+> **Nói đơn giản:** Bài này luyện các câu làm sạch **dạng đề thi thật**. Đa số là kết hợp những mảnh đã học: đếm ô thiếu, bỏ dòng/cột theo ngưỡng, điền giá trị. Hãy đọc đề *chậm*, tự hỏi "cần bảng nào ra, bước nào trước", rồi gõ từng lệnh nhỏ và xem kết quả.
+>
+> **Từ cần biết:** **`thresh=n`** = giữ dòng/cột có *ít nhất n* ô có dữ liệu · **nội suy** = đoán ô thiếu từ các ô hai bên · **`isna().sum()`** = đếm ô thiếu mỗi cột
+
 
 Đề thực hành học kỳ I 2024–2025 dành **5/10 điểm** cho hai câu: xử lý dữ liệu thiếu (2 điểm) và trùng lặp (3 điểm). Mỗi ý chỉ một hai dòng – nhưng phải đúng tham số.
 
@@ -736,6 +801,11 @@ Muốn **giữ dòng cuối cùng** trong các dòng trùng theo `Ten` và `Tuoi
 @ftu: Đề thi HK I 2024–2025 câu 4c–d (LabelEncoder, One-Hot); Final hè 2025 (rsplit, contains, cut/qcut)
 @goal: Dùng `LabelEncoder` và One-Hot đúng chỗ, tách họ tên bằng `str.rsplit(expand=True)`, tìm chuỗi bằng `str.contains`, phân biệt `pd.cut` và `pd.qcut`.
 @practice: fe12, fe13, fe14
+
+> **Nói đơn giản:** Mô hình chỉ hiểu số, nên cột chữ phải được **mã hoá**. **LabelEncoder** gán mỗi nhãn một số (Hà Nội=0, Huế=1…) – nhanh nhưng vô tình tạo *thứ bậc giả*. **One-Hot** tạo một cột 0/1 cho mỗi nhãn nên công bằng hơn. Hai kiểu ngày/chữ khác (`rsplit`, `contains`) giúp tách họ tên, tìm từ khoá.
+>
+> **Từ cần biết:** **LabelEncoder** = nhãn → số 0,1,2… · **One-Hot** = mỗi nhãn một cột 0/1 · **`str.rsplit`** = cắt chuỗi từ bên phải · **`pd.cut` vs `pd.qcut`** = chia theo khoảng vs chia theo số lượng đều
+
 
 ### LabelEncoder và One-Hot
 

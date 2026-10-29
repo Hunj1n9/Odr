@@ -13,6 +13,11 @@ Quy ước: `import matplotlib.pyplot as plt` và luôn vẽ theo kiểu **`fig,
 @goal: Tạo `fig, ax`, vẽ biểu đồ đường, đặt tiêu đề, nhãn trục, chú thích (legend) và lưới.
 @practice: v01
 
+> **Nói đơn giản:** Matplotlib vẽ theo hình ảnh: **`fig` là tờ giấy, `ax` là khung toạ độ** vẽ trên tờ giấy đó. Biểu đồ **đường** hợp để xem dữ liệu *thay đổi theo thời gian*. Một biểu đồ tử tế luôn có đủ: tiêu đề, tên hai trục, chú thích nếu có nhiều đường.
+>
+> **Từ cần biết:** **`fig, ax = plt.subplots()`** = tạo giấy + khung vẽ · **`ax.plot`** = vẽ đường · **`set_title` / `set_xlabel` / `set_ylabel`** = đặt tiêu đề, nhãn trục · **`legend`** = chú giải · **`grid`** = lưới
+
+
 ```python
 import matplotlib.pyplot as plt
 
@@ -72,6 +77,11 @@ Dạng dữ liệu nào phù hợp nhất với biểu đồ đường?
 @goal: Vẽ cột dọc/ngang, sắp xếp cột, ghi giá trị lên cột và chọn đúng loại cột cho dữ liệu.
 @practice: v02
 
+> **Nói đơn giản:** **Biểu đồ cột** để *so sánh giữa các nhóm* (doanh thu từng chi nhánh). Khi tên nhóm dài thì xoay thành cột **ngang** (`barh`) cho dễ đọc. Xếp cột từ cao xuống thấp và ghi số lên đầu cột giúp người xem hiểu ngay.
+>
+> **Từ cần biết:** **`bar`** = cột dọc · **`barh`** = cột ngang · **`annotate` / `bar_label`** = ghi số lên cột
+
+
 ```python
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -130,6 +140,11 @@ plt.show()
 @ftu: Slide Buổi 8 – box plot: phạm vi, phân tán; outline – xử lý ngoại lai
 @goal: Vẽ histogram với số khoảng phù hợp, đọc hình dạng phân phối, vẽ boxplot và tìm giá trị ngoại lai bằng quy tắc IQR.
 @practice: v03, np08
+
+> **Nói đơn giản:** **Histogram** cho thấy *hình dáng* của dữ liệu: chia các giá trị vào những "thùng" liên tiếp rồi đếm xem mỗi thùng có bao nhiêu. **Boxplot** là bản "đóng gói": cái hộp chứa **50% dữ liệu ở giữa**, vạch trong hộp là trung vị, các chấm lẻ loi ngoài râu là **giá trị ngoại lai** (điểm bất thường).
+>
+> **Từ cần biết:** **ngoại lai (outlier)** = giá trị khác thường so với phần còn lại · **Q1, Q3** = mốc 25% và 75% · **IQR = Q3 − Q1** = bề rộng cái hộp · ngoại lai nếu < Q1 − 1.5·IQR hoặc > Q3 + 1.5·IQR
+
 
 ```python
 import pandas as pd
@@ -197,6 +212,11 @@ Vạch ngang ở giữa hộp của boxplot là:
 @goal: Vẽ scatter hai biến số, đọc chiều và độ mạnh của quan hệ, tính hệ số tương quan và vẽ đường xu hướng.
 @practice: v04, pd13
 
+> **Nói đơn giản:** **Biểu đồ phân tán**: mỗi chấm là *một đối tượng*, vị trí chấm theo hai con số của nó (vd chiều cao và cân nặng). Nếu các chấm xếp thành một dải đi lên thì hai đại lượng cùng tăng. **Hệ số tương quan r** (từ −1 đến 1) đo độ "dính" ấy: gần 1 = cùng tăng, gần −1 = một tăng một giảm, gần 0 = không liên quan. *Tương quan không có nghĩa là nguyên nhân.*
+>
+> **Từ cần biết:** **scatter** = biểu đồ chấm · **tương quan** = hai đại lượng biến đổi cùng nhau · **đường xu hướng** = đường thẳng đi gần các chấm nhất
+
+
 ```python
 import numpy as np
 import pandas as pd
@@ -255,6 +275,11 @@ Hệ số tương quan cao chứng minh điều gì?
 @goal: Tạo lưới biểu đồ bằng `plt.subplots(nrows, ncols)`, điều khiển kích thước, dùng chung trục, sắp xếp gọn và lưu ảnh.
 @practice: v05
 
+> **Nói đơn giản:** Khi cần so sánh nhiều biểu đồ, ta vẽ chúng **cạnh nhau trong một hình**, như một khung tranh nhiều ô. `plt.subplots(2, 3)` tạo lưới 2 hàng 3 cột; mỗi ô là một `ax` riêng để vẽ vào.
+>
+> **Từ cần biết:** **`nrows`, `ncols`** = số hàng, số cột của lưới · **`figsize`** = kích thước hình · **`tight_layout()`** = tự dàn cho không đè lên nhau · **`savefig`** = lưu thành file ảnh
+
+
 ```python
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -301,6 +326,11 @@ plt.show()
 @ftu: Đề thi HK I 2024–2025 câu 5a (biểu đồ tròn); Final hè 2025 – biểu đồ tròn autopct
 @goal: Dùng `Series.plot` / `DataFrame.plot` với `kind=` để vẽ nhanh, vẽ biểu đồ tròn đúng chỗ và biết khi nào không nên dùng.
 @practice: v06
+
+> **Nói đơn giản:** Pandas có sẵn lệnh vẽ nhanh: `df["cot"].plot(kind="bar")` – không cần dựng `fig, ax`. **Biểu đồ tròn** chỉ hợp khi vài phần *cộng lại thành 100%* (ví dụ tỉ lệ thị phần); nhiều lát thì khó so sánh, nên dùng biểu đồ cột.
+>
+> **Từ cần biết:** **`kind=`** = chọn loại biểu đồ (`"bar"`, `"hist"`, `"pie"`…) · **`autopct`** = hiện phần trăm trên lát tròn
+
 
 Pandas gói sẵn Matplotlib: `series.plot(kind=...)` với `kind` là `"line"`, `"bar"`, `"barh"`, `"hist"`, `"box"`, `"scatter"`, `"pie"`.
 
@@ -355,6 +385,11 @@ Biểu đồ tròn phù hợp khi:
 @ftu: Lecture 7 – EDA: describe, value_counts, groupby, pivot, heatmap, tương quan; đề cương – crosstab
 @goal: Thực hiện EDA theo trình tự: thống kê mô tả → so sánh theo nhóm → ma trận tương quan → heatmap, và rút ra nhận xét.
 @practice: pd12, pd13
+
+> **Nói đơn giản:** **EDA (khám phá dữ liệu)** là bước *"nhìn trước khi làm"*: tính thống kê, so sánh các nhóm, xem hai cột nào liên quan nhau. **Ma trận tương quan** là bảng ghi r của từng cặp cột; **heatmap** tô màu bảng đó để mắt thấy ngay cặp nào mạnh.
+>
+> **Từ cần biết:** **EDA** = khám phá dữ liệu ban đầu · **`df.corr()`** = ma trận tương quan · **heatmap** = bảng tô màu theo giá trị
+
 
 EDA (Exploratory Data Analysis) = **đặt câu hỏi và trả lời bằng thống kê + biểu đồ** trước khi làm mô hình. Ví dụ với `cars.csv`: *"Yếu tố nào liên quan nhiều nhất tới giá xe?"*
 
@@ -421,6 +456,11 @@ plt.show()
 @ftu: Slide Buổi 6–7 – tương quan không phải nhân quả; khoá IBM module 3 (Pearson, ANOVA)
 @goal: Dùng `scipy.stats.pearsonr` để biết tương quan có ý nghĩa thống kê không, dùng ANOVA (`f_oneway`) so sánh trung bình nhiều nhóm.
 @practice: pd13
+
+> **Nói đơn giản:** Thấy hai cột "có vẻ liên quan" có thể chỉ là **may rủi**. **p-value** trả lời: *"nếu thực ra chẳng có quan hệ gì, thì xác suất thấy kết quả như thế này là bao nhiêu?"* Con số **nhỏ (thường < 0.05)** nghĩa là khó mà do may mắn → có bằng chứng quan hệ thật. **ANOVA** áp dụng ý này để hỏi: trung bình của nhiều nhóm có *thật sự* khác nhau không?
+>
+> **Từ cần biết:** **p-value** = xác suất thấy kết quả này nếu thực ra không có gì xảy ra · **ý nghĩa thống kê** = p < 0.05 · **`pearsonr`** = tính r và p-value · **`f_oneway`** = ANOVA
+
 
 Hệ số tương quan tính trên **mẫu** nhỏ có thể do ngẫu nhiên. **p-value** cho biết xác suất thấy tương quan mạnh như vậy nếu thực ra không có quan hệ.
 
@@ -491,6 +531,11 @@ Dùng kiểm định nào để xem **biến phân loại** có liên quan tới
 @ftu: Đề cương ôn tập – "regplot, boxplot trong seaborn"; slide Buổi 8 – Matplotlib/Seaborn/Plotly
 @goal: Vẽ `regplot` và `boxplot` bằng Seaborn như đề cương ôn tập yêu cầu, và vẽ biểu đồ cột/tròn đạt đủ tiêu chí chấm: tiêu đề, nhãn trục, giá trị trên cột, phần trăm, màu riêng từng cột.
 @practice: fe15, fe16
+
+> **Nói đơn giản:** **Seaborn** là Matplotlib được trang điểm sẵn: vài dòng ngắn đã ra biểu đồ đẹp. `regplot` vẽ chấm kèm đường xu hướng; `boxplot` vẽ hộp. Đề thi chấm theo *tiêu chí*: có tiêu đề, nhãn trục, chú giải, biểu đồ đúng loại – nhớ làm đủ từng mục.
+>
+> **Từ cần biết:** **`sns.regplot`** = chấm + đường xu hướng · **`sns.boxplot`** = hộp theo nhóm · **tiêu chí đẹp–đủ** = tiêu đề, nhãn trục, chú giải, đơn vị
+
 
 Đề cương ôn tập cuối kỳ TIN314 liệt kê *"vẽ biểu đồ regplot, boxplot trong seaborn"*; đề thi 2024–2025 có câu vẽ biểu đồ tròn và cột *"thiết kế đẹp và đầy đủ thông tin, doanh thu phải đặt trên mỗi cột"*. (Lần đầu chạy ô có `import seaborn`, trang tải thư viện khoảng vài giây.)
 

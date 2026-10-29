@@ -13,6 +13,11 @@ Mọi mô hình scikit-learn dùng **cùng một mẫu 3 bước**: tạo mô h�
 @goal: Phân biệt học có giám sát / không giám sát, hồi quy / phân loại; tách đúng X (DataFrame 2 chiều) và y (Series).
 @practice: ml06
 
+> **Nói đơn giản:** **Học máy** là cho máy xem *thật nhiều ví dụ có đáp án* để nó tự rút ra quy luật, rồi dùng quy luật đó **đoán cái mới**. Hãy nghĩ như cho học sinh xem 1000 đề đã giải. Hai thứ cần phân biệt: **X** = *thông tin đầu vào* dùng để đoán (diện tích, số phòng), **y** = *đáp án* cần đoán (giá nhà). Đoán một **con số** gọi là *hồi quy*; đoán một **nhãn** (đỗ/trượt) gọi là *phân loại*.
+>
+> **Từ cần biết:** **có giám sát** = dữ liệu có đáp án y · **không giám sát** = không có đáp án, máy tự tìm cấu trúc · **X** = bảng 2 chiều, viết `df[["a"]]` (hai ngoặc) · **y** = một cột, viết `df["b"]`
+
+
 | Loại | Có y? | Ví dụ | Mô hình |
 |---|---|---|---|
 | **Hồi quy** (có giám sát) | y là **số** | dự đoán giá xe, điểm thi | LinearRegression |
@@ -56,6 +61,11 @@ Chia nhóm khách hàng theo hành vi mua sắm, **không có nhãn có sẵn**:
 @ftu: Lecture 9 – hồi quy tuyến tính đơn biến; đề 5/1/2024 – hệ số, hệ số chặn
 @goal: Huấn luyện `LinearRegression` với một biến, đọc ý nghĩa hệ số góc (`coef_`) và hệ số chặn (`intercept_`), dự đoán giá trị mới.
 @practice: ml01, ml05
+
+> **Nói đơn giản:** Hồi quy tuyến tính đơn là **kẻ một đường thẳng đi qua đám chấm sao cho gần tất cả chấm nhất**. Đường đó có dạng `y = a·x + b`. **Hệ số góc `a`** cho biết *x tăng 1 đơn vị thì y thay đổi khoảng bao nhiêu*; **hệ số chặn `b`** là giá trị y khi x = 0. `fit` là bước "học", `predict` là bước "đoán".
+>
+> **Từ cần biết:** **`fit(X, y)`** = cho mô hình học · **`predict(X)`** = dự đoán · **`coef_`** = hệ số góc · **`intercept_`** = hệ số chặn
+
 
 Mô hình: **ŷ = b₀ + b₁·x**. Máy tìm b₀, b₁ sao cho tổng bình phương sai số nhỏ nhất.
 
@@ -102,6 +112,11 @@ Hệ số góc âm (ví dụ giá theo `highway_mpg` là −2000) nghĩa là:
 @ftu: Lecture 9 – hồi quy đa biến; đề cương ôn tập – Model Development
 @goal: Đưa nhiều biến (kể cả biến giả) vào mô hình, đọc từng hệ số "khi các biến khác giữ nguyên".
 @practice: ml07
+
+> **Nói đơn giản:** Khi có **nhiều biến X** (diện tích, số phòng, tuổi nhà…), mô hình có nhiều hệ số. Mỗi hệ số được đọc là: *"khi **các biến khác giữ nguyên**, biến này tăng 1 thì y thay đổi bấy nhiêu"*. Cụm "giữ nguyên các biến khác" là chìa khoá để diễn giải đúng.
+>
+> **Từ cần biết:** **hệ số** = mức ảnh hưởng của từng biến · **biến giả** = cột 0/1 đại diện cho một nhãn chữ · **`LinearRegression`** = mô hình đường thẳng/mặt phẳng
+
 
 **ŷ = b₀ + b₁x₁ + b₂x₂ + … + bₙxₙ**
 
@@ -158,6 +173,11 @@ Hệ số của `drive_wheels_rwd` là +9000 (nhóm gốc là `4wd`). Ý nghĩa:
 @@@ c6-4 | Đánh giá mô hình bằng biểu đồ
 @ftu: Khoá IBM module 4 – residual plot, distribution plot (đề cương FTU dùng regplot)
 @goal: Vẽ và đọc biểu đồ hồi quy, biểu đồ phần dư (residual plot) và biểu đồ so sánh phân phối giá trị thật – dự đoán.
+
+> **Nói đơn giản:** Để xem mô hình có tốt không, ta **nhìn bằng mắt**. **Phần dư = giá trị thật − giá trị đoán** (mô hình sai bao nhiêu). Biểu đồ phần dư tốt thì các chấm *rải ngẫu nhiên quanh 0*; nếu chúng tạo thành hình cong hay hình phễu thì mô hình đang bỏ sót điều gì đó.
+>
+> **Từ cần biết:** **phần dư (residual)** = sai số của từng điểm · **residual plot** = biểu đồ phần dư · **phân phối** = hình dáng các giá trị (histogram)
+
 
 ```python
 import pandas as pd
@@ -231,6 +251,11 @@ Mô hình nhiều biến – cách trực quan nào phù hợp nhất để xem 
 @goal: Tính và diễn giải R², MSE, RMSE, MAE bằng `sklearn.metrics`; so sánh hai mô hình trên cùng dữ liệu.
 @practice: ml03
 
+> **Nói đơn giản:** Cần một **con số** để chấm điểm mô hình. **R²** nói mô hình giải thích được *bao nhiêu phần trăm* biến động của y (0 → 1, càng gần 1 càng tốt). **MAE** là "trung bình đoán lệch bao nhiêu", dễ hiểu nhất. **MSE/RMSE** cũng đo sai số nhưng phạt nặng các lần lệch lớn; RMSE có cùng đơn vị với y.
+>
+> **Từ cần biết:** **R²** = mức độ giải thích (0–1) · **MAE** = sai số tuyệt đối trung bình · **MSE** = sai số bình phương trung bình · **RMSE** = căn bậc hai của MSE
+
+
 | Chỉ số | Công thức | Ý nghĩa | Tốt khi |
 |---|---|---|---|
 | MAE | trung bình \|y − ŷ\| | sai số trung bình | nhỏ |
@@ -298,6 +323,11 @@ Thêm biến vào hồi quy tuyến tính, R² **trên dữ liệu huấn luyệ
 @ftu: Lecture 9 (câu 39–41) – polynomial features, Pipeline; đề cuối kỳ mẫu câu 18
 @goal: Mô hình hoá quan hệ cong bằng `PolynomialFeatures`, gom các bước chuẩn hoá → biến đổi → mô hình vào một `Pipeline`.
 @practice: ml07
+
+> **Nói đơn giản:** Không phải quan hệ nào cũng là đường thẳng; có khi nó **cong**. Hồi quy **đa thức** thêm các cột `x²`, `x³` để vẽ được đường cong. **Pipeline** là *dây chuyền lắp ráp*: dữ liệu đi qua lần lượt các bước (chuẩn hoá → thêm cột đa thức → mô hình) trong một lệnh duy nhất.
+>
+> **Từ cần biết:** **`PolynomialFeatures(degree=2)`** = thêm cột x² · **bậc (degree)** = số mũ cao nhất · **`Pipeline`** = chuỗi bước nối nhau chạy tuần tự
+
 
 Hồi quy đa thức bậc 2: **ŷ = b₀ + b₁x + b₂x²** – vẫn là hồi quy *tuyến tính theo hệ số*, chỉ thêm cột x².
 
@@ -369,6 +399,11 @@ Lợi ích chính của `Pipeline` là:
 @ftu: Đáp án 20 câu thực hành FTU – dự đoán giá xe 4 năm tuổi từ mô hình
 @goal: Dùng mô hình để dự đoán giá trị mới, kiểm tra tính hợp lý của dự đoán, chọn mô hình theo R²/MSE và trả lời câu hỏi kinh doanh.
 
+> **Nói đơn giản:** Bài này là **dùng mô hình vào việc thật**: đưa thông tin mới (vd căn nhà 70 m², 2 phòng) để đoán giá. Trước khi tin, hãy *thử xem kết quả có hợp lý không* (giá không thể âm, không thể vô lý). Rồi trả lời câu hỏi kinh doanh bằng tiếng thường, đừng chỉ ném ra con số.
+>
+> **Từ cần biết:** **dự đoán** = đầu ra của mô hình cho dữ liệu mới · **tính hợp lý** = kiểm tra kết quả có phi lý không · **so sánh mô hình** = chọn cái có R² cao, sai số thấp
+
+
 Mô hình chỉ có giá trị khi giúp **ra quyết định**. Ví dụ: *"Với ngân sách 25 000, nên tìm xe công suất tối đa bao nhiêu?"*
 
 ```python
@@ -416,6 +451,11 @@ Mô hình dự đoán một xe có giá **âm**. Điều này cho thấy:
 @ftu: Lecture 10 (câu 46–48) – phân loại nhị phân, hàm sigmoid; outline – Logistic Regression, KNN Classifier
 @goal: Huấn luyện ba mô hình phân loại phổ biến, dự đoán nhãn và xác suất, hiểu khi nào cần chuẩn hoá dữ liệu.
 @practice: ml02, ml08, ml09
+
+> **Nói đơn giản:** Bây giờ đoán **nhãn** thay vì con số. **Logistic** (tên có chữ "hồi quy" nhưng làm phân loại) cho ra *xác suất* thuộc mỗi nhóm. **KNN** làm như *hỏi k người hàng xóm gần nhất rồi bỏ phiếu*. **Cây quyết định** hỏi một chuỗi câu có/không ("thu nhập > 10 triệu?") để đi đến kết luận. KNN dựa vào khoảng cách nên cần **chuẩn hoá** dữ liệu trước.
+>
+> **Từ cần biết:** **nhãn (class)** = nhóm cần đoán · **`predict_proba`** = xác suất mỗi nhóm · **k** = số hàng xóm xét · **chuẩn hoá** = đưa các cột về cùng thang đo
+
 
 Câu hỏi: *từ giờ tự học, chuyên cần và điểm giữa kỳ, dự đoán sinh viên đạt **final ≥ 7** hay không?*
 
@@ -494,6 +534,11 @@ Vì sao nên **chuẩn hoá** dữ liệu trước KNN?
 @ftu: Outline Chương 5 – K-Means, Elbow method, Silhouette score; bộ câu hỏi câu 27 – phân cụm khách hàng
 @goal: Chuẩn hoá dữ liệu, chạy `KMeans`, đọc tâm cụm và mô tả từng cụm bằng groupby; chọn k bằng phương pháp khuỷu tay.
 @practice: ml12, tt306
+
+> **Nói đơn giản:** **Phân cụm** không có đáp án sẵn: máy tự **gom các điểm giống nhau thành k nhóm**, như xếp khách hàng thành vài "kiểu người". **Tâm cụm** là điểm trung bình của mỗi nhóm; đọc tâm cụm để biết nhóm đó là kiểu người nào. Chọn k bằng *phương pháp khuỷu tay*: tăng k và tìm chỗ biểu đồ bắt đầu "gập".
+>
+> **Từ cần biết:** **K-Means** = thuật toán gom k cụm · **tâm cụm (centroid)** = điểm đại diện của cụm · **`inertia_`** = độ "lỏng" của các cụm · **elbow** = điểm gập để chọn k
+
 
 ```python
 import pandas as pd

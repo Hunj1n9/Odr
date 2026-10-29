@@ -79,6 +79,10 @@ export function hydrateCells(root) {
 export function renderMarkdownInto(el, text, opts) {
   el.innerHTML = md(text, opts);
   el.classList.add("md");
+  // khung "Nói đơn giản": giải thích bằng lời đời thường ở đầu mỗi bài
+  el.querySelectorAll("blockquote").forEach((b) => {
+    if (b.textContent.trim().startsWith("Nói đơn giản")) b.classList.add("plain");
+  });
   highlightIn(el);
   if (opts?.runnable) hydrateCells(el);
 }

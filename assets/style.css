@@ -440,3 +440,9 @@ textarea { border-radius: 16px; }
 .lesson-help { margin-top: 16px; padding: 14px 16px; border-radius: 18px; background: var(--accent-soft); }
 .lesson-help b { display: block; margin-bottom: 8px; font-size: .9rem; }
 .lesson-help .btn { white-space: normal; text-align: left; border-radius: 16px; }
+
+/* khung "Nói đơn giản" ở đầu bài học */
+.md blockquote.plain { border-left: none; background: var(--pastel-mint); border-radius: 20px; padding: 16px 20px; margin: 4px 0 20px; }
+.md blockquote.plain p:first-child { font-size: 1.02rem; }
+.md blockquote.plain p + p { margin-top: .6rem; padding-top: .6rem; border-top: 1px dashed color-mix(in srgb, var(--text) 18%, transparent); font-size: .9rem; color: var(--muted); }
+.md blockquote.plain code { background: color-mix(in srgb, var(--text) 12%, transparent); }

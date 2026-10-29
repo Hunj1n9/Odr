@@ -10,6 +10,11 @@ Chương mở đầu: **không cần biết lập trình trước**. Mỗi bài 
 @ftu: Outline môn học – Chương 0–1 (Python cho phân tích kinh tế, giới thiệu Pandas/NumPy/Matplotlib/Seaborn); đề cương QLĐT Chương 1
 @goal: Giải thích được vì sao dân kinh tế học Python, và biết mỗi thư viện NumPy, Pandas, Matplotlib, scikit-learn dùng để làm gì.
 
+> **Nói đơn giản:** Python giống một **bộ đồ nghề**, mỗi thư viện là một dụng cụ trong đó: **Pandas** là "Excel viết bằng code", **NumPy** là máy tính bỏ túi siêu nhanh cho cả hàng nghìn con số, **Matplotlib** là bút vẽ biểu đồ, **scikit-learn** là bộ não giúp máy dự đoán. Bạn chưa cần nhớ cách dùng – chỉ cần biết *khi nào chọn dụng cụ nào*.
+>
+> **Từ cần biết:** **thư viện** = bộ code người khác viết sẵn để mình mượn dùng · **DataFrame** = bảng dữ liệu giống một sheet Excel · **mô hình** = công thức máy học được từ dữ liệu để đưa ra dự đoán
+
+
 ### Vì sao là Python?
 
 Excel rất tốt với vài nghìn dòng. Khi dữ liệu lên tới hàng trăm nghìn dòng, cần lặp lại báo cáo mỗi tuần, hoặc cần chạy mô hình dự báo – bạn cần một ngôn ngữ lập trình. Python được chọn vì:
@@ -69,6 +74,11 @@ Muốn **xây mô hình dự đoán** giá xe từ công suất động cơ, b�
 @@@ c1-2 | Chạy những dòng code đầu tiên
 @ftu: Outline môn học – mục Google Colab, cài đặt môi trường; LEC 2 (thụt lề, biến không cần khai báo kiểu)
 @goal: Dùng `print()`, viết chú thích `#`, hiểu "ô code" kiểu Jupyter và viết hàm đầu tiên có `return`.
+
+> **Nói đơn giản:** Web này (và Jupyter/Colab) chia code thành **các ô nhỏ**. Bạn chạy từng ô một và xem kết quả ngay bên dưới, giống như thử từng bước của công thức nấu ăn rồi nếm. Phần viết hàm ở cuối bài nhắc lại Chương 0 – nếu còn lạ, hãy xem lại **bài 0.8**.
+>
+> **Từ cần biết:** **ô code** = một khối code chạy độc lập · **`#`** = ghi chú cho người đọc, máy bỏ qua · **`return`** = trả kết quả ra khỏi hàm
+
 
 ### Ô code (cell) và `print()`
 
@@ -132,6 +142,11 @@ def tinh(x):          # (2)
 @ftu: Ghi chú Buổi 03 – tái sử dụng module/package, `import ... as ...`
 @goal: Viết đúng 3 kiểu `import`, dùng được hàm trong module `math`, `statistics` và quy ước `np`, `pd`, `plt`.
 
+> **Nói đơn giản:** Python mang theo rất ít thứ khi mới mở. Muốn dùng thêm dụng cụ (như `math` để tính căn bậc hai), bạn phải **mượn từ kho** bằng lệnh `import` – giống mượn sách ở thư viện trước khi đọc. `as` chỉ là cách đặt **biệt danh** cho ngắn gọn.
+>
+> **Từ cần biết:** **module** = một "cuốn sách" chứa nhiều hàm có sẵn · **`import math`** = mượn cả cuốn · **`import numpy as np`** = mượn và gọi tắt là `np` · **`from math import sqrt`** = chỉ mượn đúng một hàm
+
+
 Thư viện (module) phải được **nạp** trước khi dùng:
 
 ```python
@@ -192,6 +207,11 @@ print(math.ceil(4.2), math.floor(4.8), math.gcd(12, 18), math.comb(5, 2))
 @ftu: Buổi 5 – các bước phân tích dữ liệu; outline – tổng quan quy trình phân tích
 @goal: Kể đúng thứ tự 7 bước của một dự án khoa học dữ liệu và biết mỗi bước được học ở chương nào.
 
+> **Nói đơn giản:** Một dự án dữ liệu giống **tổ chức một bữa tiệc**: quyết định làm món gì (đặt câu hỏi), đi chợ (thu thập dữ liệu), nhặt rửa (làm sạch), nếm thử (khám phá), nấu (dựng mô hình), rồi bày ra bàn cho khách (trình bày). Bài này chỉ cho bạn **bản đồ tổng thể** để biết mỗi chương sau nằm ở bước nào.
+>
+> **Từ cần biết:** **làm sạch dữ liệu** = sửa chỗ thiếu, trùng, sai trước khi phân tích · **mô hình** = công thức dự đoán · **trực quan hoá** = biến số thành biểu đồ
+
+
 Dự án nhóm (30% điểm) chấm theo tiêu chí: *xác định vấn đề rõ ràng – code dễ hiểu – chạy đúng*. Mọi dự án đi theo cùng một quy trình:
 
 | Bước | Việc | Chương |
@@ -245,6 +265,11 @@ Xử lý ô trống và dòng trùng lặp thuộc bước nào?
 @@@ c1-5 | Đọc thông báo lỗi
 @ftu: Bộ câu hỏi ôn giữa kỳ Lecture 3–6 – phần "ngoại lệ"
 @goal: Đọc traceback từ dòng cuối, nhận ra 5 lỗi hay gặp nhất (SyntaxError, IndentationError, NameError, TypeError, ZeroDivisionError) và tự sửa.
+
+> **Nói đơn giản:** Thông báo lỗi dài trông đáng sợ nhưng thật ra là **biên bản** máy ghi lại: "tôi đang làm gì thì gặp chuyện". Bạn chỉ cần đọc **dòng cuối** (lỗi gì) rồi tìm **số dòng** (ở đâu). Xem thêm **bài 0.9** để có quy trình 4 bước tự sửa lỗi.
+>
+> **Từ cần biết:** **traceback** = đoạn biên bản dài của lỗi · **`NameError`** = gọi tên chưa tồn tại (thường gõ sai chính tả) · **`TypeError`** = trộn sai loại dữ liệu (như chữ + số)
+
 
 Gặp lỗi là chuyện bình thường. Kỹ năng quan trọng là **đọc dòng cuối** của thông báo: tên lỗi + mô tả.
 
